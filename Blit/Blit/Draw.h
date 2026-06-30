@@ -1,15 +1,18 @@
 #pragma once
 class Draw
 {
-private:
+public:
 
-	static Draw* instance;
+	static Draw& GetInstance();
+
+	void Fill(unsigned int* colorBuffer, const unsigned int color, const unsigned int numPixels);
+
+private:
 
 	Draw();
 
-public:
+	Draw(const Draw&) = delete;
+	Draw& operator=(const Draw&) = delete;
 
-	static Draw* GetInstance();
-	void Fill(unsigned int* colorBuffer, const unsigned int color);
 };
 

@@ -1,4 +1,5 @@
 #include "RasterSurface.h"
+#include "Draw.h"
 
 int main()
 {
@@ -10,7 +11,7 @@ int main()
 	unsigned int* rgbPixels = new unsigned int[numPixels];
 	while (RS_Update(rgbPixels, numPixels))
 	{
-
+		Draw::GetInstance().Fill(rgbPixels, 123, numPixels);
 	}
 
 	RS_Shutdown();
