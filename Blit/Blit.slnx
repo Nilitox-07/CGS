@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="Blit/Blit.vcxproj" Id="911ed88f-d0d7-42df-8143-0ef2a87544d5" />
+</Solution>
