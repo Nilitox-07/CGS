@@ -1,17 +1,18 @@
 #include "RasterSurface.h"
 #include "Draw.h"
+#include "Types.h"
 
 int main()
 {
-	unsigned int width = 500;
-	unsigned int height = 500;
+	UINT width = 500;
+	UINT height = 500;
 
 	RS_Initialize("niloGarcia", width, height);
-	const unsigned int numPixels = width * height;
-	unsigned int* rgbPixels = new unsigned int[numPixels];
+	const UINT numPixels = width * height;
+	UINT* rgbPixels = new UINT[numPixels];
 	while (RS_Update(rgbPixels, numPixels))
 	{
-		Draw::GetInstance().Fill(rgbPixels, 123, numPixels);
+		Draw::GetInstance().Fill(rgbPixels, 0xFF557711, numPixels);
 	}
 
 	RS_Shutdown();
