@@ -13,6 +13,8 @@ int main()
 	while (RS_Update(rgbPixels, numPixels))
 	{
 		Draw::GetInstance().Fill(rgbPixels, 0xFF557711, numPixels);
+		Draw::GetInstance().DrawPixel(rgbPixels, 0xFFFFFFFF, Point(200, 500), width);
+		Draw::GetInstance().Line(rgbPixels, 0xFFFFFFFF, Point(170, 60), Point(320, 60), width);
 	}
 
 	RS_Shutdown();

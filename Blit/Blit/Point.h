@@ -3,10 +3,16 @@
 
 struct Point
 {
-	UINT x;
-	UINT y;
+	float x;
+	float y;
 
-	Point(UINT _x, UINT _y)
+	Point()
+	{
+		x = 0;
+		y = 0;
+	}
+
+	Point(float _x, float _y)
 	{
 		x = _x;
 		y = _y;

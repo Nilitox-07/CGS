@@ -1,6 +1,7 @@
 #pragma once
 #include "Types.h"
 #include "Point.h"
+#include <math.h>
 
 struct Rect
 {
