@@ -1,47 +1,88 @@
 #include "Draw.h"
 
-Draw::Draw()
+Draw::Draw(UINT _width, UINT _height, bool _alphaBlending) : 
+	width(_width), 
+	height(_height), 
+	numPixels(_width * _height),
+	surface(new UINT[numPixels]),
+	alphaBlending(_alphaBlending)
 {
 
 }
 
-Draw& Draw::GetInstance()
+UINT* Draw::GetSurface()
 {
-	static Draw instance;
-	return instance;
+	return surface;
+}
+
+UINT Draw::GetPixels()
+{
+	return numPixels;
+}
+
+UINT Draw::GetWidth()
+{
+	return width;
+}
+
+UINT Draw::GetHeight()
+{
+	return height;
 }
 
 
-void Draw::Fill(UINT* colorBuffer, const UINT color, const UINT numPixels)
+void Draw::Fill(const UINT color)
 {
-	for (unsigned int* currentPtr = colorBuffer; currentPtr != colorBuffer + numPixels; currentPtr++)
+	for (unsigned int* currentPtr = surface; currentPtr != surface + numPixels; currentPtr++)
 	{
 		*currentPtr = color;
 	}
 }
 
-UINT Draw::_2Dto1D(UINT x, UINT y, UINT width)
+UINT Draw::_2Dto1D(UINT x, UINT y)
 {
 	return x + y * width;
 }
 
-void Draw::DrawPixel(UINT* colorBuffer, const UINT color, Point pos, const UINT width)
+void Draw::DrawPixel(const UINT color, Point pos)
 {
-	colorBuffer[Draw::GetInstance()._2Dto1D((int)pos.x, (int)pos.y, width)] = color;
+	surface[_2Dto1D((int)pos.x, (int)pos.y)] = color;
 }
 
-void Draw::Blit(UINT* colorBuffer, Rect sourceRect, Point rasterPos, UINT sourceTextureWidth, UINT* image)
+void Draw::Blit(Rect sourceRect, Point rasterPos, UINT sourceTextureWidth, const UINT* image, UINT imagePixels)
 {
-	//for (UINT* bufferPtr = colorBuffer + rasterPos.x; bufferPtr)
+	if (alphaBlending)
+	{
+		for (int y = 0; y < sourceRect.height; y++)
+		{
+			for (int x = 0; x < sourceRect.width; x++)
+			{
+				Pixels destination(*(surface + (int)rasterPos.x + x + (width * y)), true);
+				Pixels source(*(image + x + (sourceRect.width * y)), true);
+				destination.Lerp(source);
+				*(surface + (int)rasterPos.x + x + (width * y)) = destination.ARGB;
+			}
+		}
+	}
+	else
+	{
+		const UINT* imagePtr = image + (int)sourceRect.pos.x;
+
+		for (UINT* bufferPtr = surface + (int)rasterPos.x; bufferPtr < surface + numPixels && imagePtr < image + imagePixels; bufferPtr += width)
+		{
+			std::memcpy(bufferPtr, imagePtr, sourceRect.width * sizeof(UINT));
+			imagePtr += sourceTextureWidth;
+		}
+	}
 }
 
-void Draw::Line(UINT* colorBuffer, const UINT color, Point point1, Point point2, UINT width)
+void Draw::LineNx(const UINT color, Point point1, Point point2)
 {
 	if (point1.x == point2.x)
 	{
 		for (int y = fmin(point1.y, point2.y); y < fmin(point1.y, point2.y) + fabs(point1.y - point2.y); y++)
 		{
-			Draw::GetInstance().DrawPixel(colorBuffer, color, Point(point1.x, y), width);
+			DrawPixel(color, Point(point1.x, y));
 		}
 		return;
 	}
@@ -51,14 +92,14 @@ void Draw::Line(UINT* colorBuffer, const UINT color, Point point1, Point point2,
 	{
 		for (int x = fmin(point1.x, point2.x); x < fmin(point1.x, point2.x) + fabs(point1.x - point2.x); x++)
 		{
-			Draw::GetInstance().DrawPixel(colorBuffer, color, Point(x, slope * x + intercept), width);
+			DrawPixel(color, Point(x, slope * x + intercept));
 		}
 	}
 	else
 	{
 		for (int y = fmin(point1.y, point2.y); y < fmin(point1.y, point2.y) + fabs(point1.y - point2.y); y++)
 		{
-			Draw::GetInstance().DrawPixel(colorBuffer, color, Point((y - intercept)/slope, y), width);
+			DrawPixel(color, Point((y - intercept)/slope, y));
 		}
 	}
 }

@@ -1,20 +1,24 @@
 #include "RasterSurface.h"
 #include "Draw.h"
 #include "Types.h"
+#include "textures.h"
 
 int main()
 {
+	ConvertImages();
+
 	UINT width = 500;
 	UINT height = 500;
 
 	RS_Initialize("niloGarcia", width, height);
-	const UINT numPixels = width * height;
-	UINT* rgbPixels = new UINT[numPixels];
-	while (RS_Update(rgbPixels, numPixels))
+	Draw screen(width, height);
+
+	Rect image(tiles_12_width, tiles_12_height);
+
+	while (RS_Update(screen.GetSurface(), screen.GetPixels()))
 	{
-		Draw::GetInstance().Fill(rgbPixels, 0xFF557711, numPixels);
-		Draw::GetInstance().DrawPixel(rgbPixels, 0xFFFFFFFF, Point(200, 500), width);
-		Draw::GetInstance().Line(rgbPixels, 0xFFFFFFFF, Point(170, 60), Point(320, 60), width);
+		screen.Fill(0xFF000FF000);
+		screen.Blit(image, Point(), image.width, tiles_12_pixels, tiles_12_numpixels);
 	}
 
 	RS_Shutdown();

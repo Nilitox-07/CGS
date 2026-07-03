@@ -9,7 +9,7 @@ struct Rect
 	UINT height;
 	Point pos;
 
-	Rect(UINT _width, UINT _height, Point _pos)
+	Rect(UINT _width, UINT _height, Point _pos = Point())
 	{
 		width = _width;
 		height = _height;
