@@ -10,6 +10,14 @@ Draw::Draw(UINT _width, UINT _height, bool _alphaBlending) :
 
 }
 
+Draw::Draw(Rect imageRect, bool _alphaBlending) :
+	width(imageRect.width),
+	height(imageRect.height),
+	numPixels(imageRect.width * imageRect.height),
+	surface(new UINT[numPixels]),
+	alphaBlending(_alphaBlending)
+{}
+
 UINT* Draw::GetSurface()
 {
 	return surface;
@@ -28,6 +36,33 @@ UINT Draw::GetWidth()
 UINT Draw::GetHeight()
 {
 	return height;
+}
+
+UINT* Draw::GetPixel(Point pos)
+{
+	return &surface[_2Dto1D((int)pos.x, (int)pos.y)];
+}
+
+void Draw::SetImage(UINT* image, UINT _width, UINT _height)
+{
+	Resize(_width, _height);
+
+	std::memcpy(surface, image, numPixels * sizeof(*surface));
+}
+
+void Draw::Resize(UINT _width, UINT _height)
+{
+	if (surface != nullptr)
+	{
+		delete[] surface;
+		surface = nullptr;
+	}
+
+	width = _width;
+	height = _height;
+	numPixels = width * height;
+
+	surface = new UINT[numPixels];
 }
 
 
@@ -49,29 +84,41 @@ void Draw::DrawPixel(const UINT color, Point pos)
 	surface[_2Dto1D((int)pos.x, (int)pos.y)] = color;
 }
 
-void Draw::Blit(Rect sourceRect, Point rasterPos, UINT sourceTextureWidth, const UINT* image, UINT imagePixels)
+void Draw::Blit(Rect sourceRect, Point rasterPos, Draw& image)
 {
-	if (alphaBlending)
+	if (alphaBlending && image.alphaBlending)
 	{
-		for (int y = 0; y < sourceRect.height; y++)
+		for (int y = 0; y < sourceRect.height && y + rasterPos.y < height; y++)
 		{
-			for (int x = 0; x < sourceRect.width; x++)
+			for (int x = 0; x < sourceRect.width && x + rasterPos.x < width; x++)
 			{
-				Pixels destination(*(surface + (int)rasterPos.x + x + (width * y)), true);
-				Pixels source(*(image + x + (sourceRect.width * y)), true);
+				Pixels destination(*GetPixel(Point(x + rasterPos.x, y + rasterPos.y)), true);
+				Pixels source(*image.GetPixel(Point(x + sourceRect.pos.x, y + sourceRect.pos.y)), true);
+				
 				destination.Lerp(source);
-				*(surface + (int)rasterPos.x + x + (width * y)) = destination.ARGB;
+				DrawPixel(destination.ARGB, Point(x + rasterPos.x, y + rasterPos.y));
 			}
 		}
 	}
 	else
 	{
-		const UINT* imagePtr = image + (int)sourceRect.pos.x;
+		const UINT* imagePtr = image.GetPixel(sourceRect.pos);
 
-		for (UINT* bufferPtr = surface + (int)rasterPos.x; bufferPtr < surface + numPixels && imagePtr < image + imagePixels; bufferPtr += width)
+		for (UINT* bufferPtr = GetPixel(rasterPos); bufferPtr < surface + numPixels && imagePtr < image.surface + image.numPixels; bufferPtr += width)
 		{
 			std::memcpy(bufferPtr, imagePtr, sourceRect.width * sizeof(UINT));
-			imagePtr += sourceTextureWidth;
+			imagePtr += image.width;
+		}
+	}
+}
+
+void Draw::LoadAnimation(Draw& spriteSheet, Point rasterPos, UINT imageSizeWidth, UINT imageSizeHeight)
+{
+	for (int y = 0; y < spriteSheet.GetHeight() / imageSizeHeight; y++)
+	{
+		for (int x = 0; x < spriteSheet.GetWidth() / imageSizeWidth; x++)
+		{
+
 		}
 	}
 }

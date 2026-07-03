@@ -7,19 +7,24 @@
 class Draw
 {
 public:
+	
+	Draw(UINT width, UINT height, bool _alphaBlending = true);
+	Draw(Rect imageRect, bool _alphaBlending = true);
 
 	void Fill(const UINT color);
 	UINT _2Dto1D(UINT x, UINT y);
 	void DrawPixel(const UINT color, Point pos);
-	void Blit(Rect sourceRect, Point rasterPos, UINT sourceTextureWidth, const UINT* image, UINT imagePixels);
+	void Blit(Rect sourceRect, Point rasterPos, Draw& image);
+	void LoadAnimation(Draw& spriteSheet, Point rasterPos, UINT imageSizeWidth, UINT imageSizeHeight);
 	void LineNx(const UINT color, Point point1, Point point2);
-
-	Draw(UINT width, UINT height, bool _alphaBlending = true);
 
 	UINT* GetSurface();
 	UINT GetPixels();
 	UINT GetWidth();
 	UINT GetHeight();
+	UINT* GetPixel(Point pos);
+	void SetImage(UINT* image, UINT _width, UINT _height);
+	void Resize(UINT _width, UINT _height);
 
 private:
 

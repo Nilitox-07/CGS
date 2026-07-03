@@ -32,11 +32,11 @@ struct Pixels
 	void Lerp(Pixels other)
 	{
 		float reciprocal = 1.0f / 255.0f;
-		float ratio = alpha * reciprocal;
-		red = std::lerp(other.red, red, ratio);
-		green = std::lerp(other.green, green, ratio);
-		blue = std::lerp(other.blue, blue, ratio);
-		alpha = std::lerp(other.alpha, alpha, ratio);
+		float ratio = other.alpha * reciprocal;
+		red = std::lerp(red, other.red, ratio);
+		green = std::lerp(green, other.green, ratio);
+		blue = std::lerp(blue, other.blue, ratio);
+		alpha = std::lerp(alpha, other.alpha, ratio);
 		ARGB_Func();
 	}
 
