@@ -180,16 +180,9 @@ void Draw::Blit(Rect sourceRect, Point rasterPos, Draw& image)
 
 		for (UINT* bufferPtr = GetPixel(rasterPos); bufferPtr < surface + numPixels && imagePtr < image.surface + image.numPixels; bufferPtr += width)
 		{
-			std::memcpy(bufferPtr, imagePtr, sourceRect.width * sizeof(UINT));
+			int posibleSubstraction = (int)rasterPos.x + (int)sourceRect.width - (int)width;
+			std::memcpy(bufferPtr, imagePtr, ((int)sourceRect.width - (posibleSubstraction > 0 ? posibleSubstraction : 0)) * sizeof(UINT));
 			imagePtr += image.width;
-			if (sourceRect.width > width)
-				std::cout << "ROW OVERFLOW RISK\n";
-
-			if (sourceRect.pos.x + sourceRect.width > image.width)
-				std::cout << "SOURCE READ OVERFLOW\n";
-
-			if ((bufferPtr + sourceRect.width) > (surface + numPixels))
-				std::cout << "DEST WRITE OVERFLOW\n";
 		}
 	}
 }

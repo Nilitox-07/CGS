@@ -14,7 +14,7 @@ int main()
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF |
 		_CRTDBG_CHECK_ALWAYS_DF |
 		_CRTDBG_LEAK_CHECK_DF);
-	_CrtSetBreakAlloc(CodeBlock); // set block of memory to find memory leak
+	_CrtSetBreakAlloc(-1); // set block of memory to find memory leak
 	_CrtDumpMemoryLeaks();
 
 #endif
@@ -32,12 +32,10 @@ int main()
 	std::vector<int> randomObjects;
 	for (int i = 0; i < 20; i++)
 	{
-		Point randPos(rand() % width, rand() % height);
+		Point randPos(rand() % (width - 16), rand() % (height - 16));
 		randomObjectsPosition.push_back(randPos);
 		randomObjects.push_back(rand() % 4);
 	}
-	randomObjectsPosition.push_back(Point(498, 0));
-	randomObjects.push_back(0);
 
 	RS_Initialize("Nilo Garcia: Lab 1", width, height);
 	Draw screen(width, height);
