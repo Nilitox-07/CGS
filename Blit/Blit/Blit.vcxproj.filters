@@ -27,6 +27,9 @@
     <ClCompile Include="Draw.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="XTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="RasterSurface.h">
@@ -45,6 +48,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="pixels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fire_02.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="XTime.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -142,14 +142,17 @@
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RasterSurface.cpp" />
+    <ClCompile Include="XTime.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Draw.h" />
+    <ClInclude Include="fire_02.h" />
     <ClInclude Include="pixels.h" />
     <ClInclude Include="RasterSurface.h" />
     <ClInclude Include="textures.h" />
     <ClInclude Include="tiles_12.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="XTime.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
