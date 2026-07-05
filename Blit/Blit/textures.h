@@ -1,18 +1,21 @@
 #pragma once
-#include "tiles_12.h"
 #include <vector>
+#include "Draw.h"
+#include "tiles_12.h"
 #include "pixels.h"
 #include "fire_02.h"
 
-void ConvertBGRAtoARGB(UINT* texture, UINT textureWidth, UINT totalPixels)
+Draw ConvertBGRAtoARGB(const UINT* texture, UINT textureWidth, UINT totalPixels)
 {
 	std::vector<Pixels> _texture;
+	Draw image(Rect(textureWidth, totalPixels), true);
 	_texture.reserve(totalPixels);
 	_texture.assign(texture, texture + totalPixels);
 	for (int textureIndex = 0; textureIndex < totalPixels; textureIndex++)
 	{
-		texture[textureIndex] = _texture[textureIndex].ARGB;
+		image.DrawPixel(_texture[textureIndex].ARGB, Point(textureIndex, 0));
 	}
+	return image;
 }
 
 void ConvertImages()

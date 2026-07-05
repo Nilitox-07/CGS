@@ -9,6 +9,8 @@ public:
 	Shape(Point _position, UINT _sides, float _orientation);
 
 	void DrawShape(Draw& screen, UINT startColor, UINT endColor);
+	UINT GetSides();
+	const std::vector<Point>& GetVertices();
 
 protected:
 	Point CalculateCentroid(std::vector<Point> _vertices);

@@ -13,6 +13,7 @@ public:
 
 	Draw(UINT width, UINT height, bool _alphaBlending = true, bool _isAnimation = false, double _animationTimerMax = 60.0f, Draw* _parent = nullptr);
 	Draw(Rect imageRect, bool _alphaBlending = true, bool _isAnimation = false, double _animationTimerMax = 60.0f, Draw* _parent = nullptr);
+	Draw(const Draw& other);
 	~Draw();
 
 	void Fill(const UINT color);
@@ -37,7 +38,6 @@ public:
 private:
 
 
-	Draw(const Draw&) = delete;
 	Draw& operator=(const Draw&) = delete;
 
 	UINT numPixels;

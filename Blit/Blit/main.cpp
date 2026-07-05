@@ -8,6 +8,15 @@
 
 void Display(Draw& screen);
 
+Pixels red(0xFFFF0000, true);
+Pixels green(0xFF00FF00, true);
+Pixels blue(0xFF0000FF, true);
+Pixels purple(0xFFFF00FF, true);
+Pixels yellow(0xFFFFFF00, true);
+Pixels cyan(0xFF00FFFF, true);
+Pixels black(0xFF000000, true);
+Pixels white(0xFFFFFFFF, true);
+
 int main()
 {
 #if 1
@@ -33,14 +42,23 @@ int main()
 	Draw screen(width, height);
 
 	AutoPolygon testPoly(Point(250, 250), 8, 150);
+	const std::vector<Point>& vertices = testPoly.GetVertices();
+
+	std::vector<Pixels> colors = { red, green, blue, yellow, purple, cyan };
 
 	while (RS_Update(screen.GetSurface(), screen.GetPixels()))
 	{
-		screen.Fill(0xFF000000);
+		screen.Fill(black.ARGB);
 
-		//Display(screen);
+		Display(screen);
 
-		testPoly.DrawShape(screen, 0xFFFF0000, 0xFF0000FF);
+
+		for (int i = 0; i < (int)testPoly.GetSides() / 2; i++)
+		{
+			screen.ParametricLine(vertices[i], vertices[(i + ((int)testPoly.GetSides() / 2)) % (int)testPoly.GetSides()], colors[i % colors.size()].ARGB, colors[i % colors.size()].ARGB); 
+			// This doesnt connect all vertices correctly on a odd number of vertices/sides
+		}
+		testPoly.DrawShape(screen, red.ARGB, blue.ARGB);
 
 		clock.Signal();
 	}
@@ -52,7 +70,4 @@ int main()
 
 void Display(Draw& screen)
 {
-	screen.ParametricLine(Point(200, 200), Point(400, 400), 0xFFFF0000, 0xFF0000FF);
-	screen.DrawPixel(0xFFFFFFFF, Point(200, 200));
-	screen.DrawPixel(0xFFFFFFFF, Point(400, 400));
 }

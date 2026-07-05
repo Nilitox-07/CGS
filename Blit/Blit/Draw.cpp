@@ -49,6 +49,25 @@ Draw::Draw(Rect imageRect, bool _alphaBlending, bool _isAnimation, double _anima
 	}
 }
 
+Draw::Draw(const Draw& other):
+	width(other.width),
+	height(other.height),
+	numPixels(other.width * other.height),
+	surface(new UINT[numPixels]),
+	alphaBlending(other.alphaBlending),
+	ID(0),
+	isAnimation(false),
+	parentID(0),
+	animationID(0),
+	animationTrack(0),
+	animationTimer(other.animationTimerMax),
+	animationTimerMax(other.animationTimerMax)
+{
+	memcpy(surface, other.surface, numPixels);
+	Draw::ID_Count++;
+	ID = Draw::ID_Count;
+}
+
 Draw::~Draw()
 {
 	delete[] surface;
@@ -238,8 +257,6 @@ void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, con
 			
 			float y = std::lerp((fmin(point1.x, point2.x) == point1.x ? point1.y : point2.y), (fmin(point1.x, point2.x) == point2.x ? point1.y : point2.y), ratio);
 
-			//y = Lerp(startY, EndY, ratio)
-
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
@@ -253,8 +270,6 @@ void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, con
 			float ratio = (y - fmin(point1.y, point2.y)) / (fabs(point1.y - point2.y));
 
 			float x = std::lerp((fmin(point1.y, point2.y) == point1.y ? point1.x : point2.x), (fmin(point1.y, point2.y) == point2.y ? point1.x : point2.x), ratio);
-
-			//y = Lerp(startY, EndY, ratio)
 
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);

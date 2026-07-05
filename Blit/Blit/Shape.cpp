@@ -57,9 +57,19 @@ void Shape::DrawShape(Draw& screen, UINT startColor, UINT endColor)
 		firstColorPx.Lerp(endColorPx, i * 1.0f / edges.size());
 		secondColorPx.Lerp(endColorPx, ((i + 1) * 1.0f) / edges.size());
 
-		screen.ParametricLine(edges[i][0], edges[i][1], firstColorPx.ARGB, secondColorPx.ARGB);//std::lerp(startColor, endColor, i * 1.0f / edges.size()), std::lerp(startColor, endColor, ((i + 1) * 1.0f) / edges.size()));
-		//screen.LineNx(edges[i][0], edges[i][1], firstColorPx.ARGB, secondColorPx.ARGB);//std::lerp(startColor, endColor, i * 1.0f / edges.size()), std::lerp(startColor, endColor, ((i + 1) * 1.0f) / edges.size()));
+		screen.ParametricLine(edges[i][0], edges[i][1], firstColorPx.ARGB, secondColorPx.ARGB);
+		//screen.LineNx(edges[i][0], edges[i][1], firstColorPx.ARGB, secondColorPx.ARGB);
 	}
+}
+
+UINT Shape::GetSides()
+{
+	return sides;
+}
+
+const std::vector<Point>& Shape::GetVertices()
+{
+	return vertices;
 }
 
 Circle::Circle(Point _position, float _radius) :

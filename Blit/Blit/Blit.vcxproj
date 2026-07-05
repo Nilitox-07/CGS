@@ -141,6 +141,7 @@
   <ItemGroup>
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pixels.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="RasterSurface.cpp" />
     <ClCompile Include="Shape.cpp" />
