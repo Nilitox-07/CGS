@@ -29,10 +29,10 @@ struct Pixels
 
 	}
 
-	void Lerp(Pixels other)
+	void Lerp(Pixels other, float percentage = 1.0f)
 	{
 		float reciprocal = 1.0f / 255.0f;
-		float ratio = other.alpha * reciprocal;
+		float ratio = other.alpha * reciprocal * percentage;
 		red = std::lerp(red, other.red, ratio);
 		green = std::lerp(green, other.green, ratio);
 		blue = std::lerp(blue, other.blue, ratio);

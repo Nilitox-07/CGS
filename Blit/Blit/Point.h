@@ -1,20 +1,20 @@
 #pragma once
 #include "Types.h"
+#include <cmath>
+#include <numbers>
 
 struct Point
 {
 	float x;
 	float y;
 
-	Point()
-	{
-		x = 0;
-		y = 0;
-	}
+	Point();
 
-	Point(float _x, float _y)
-	{
-		x = _x;
-		y = _y;
-	}
+	Point(float _x, float _y);
+
+	float Magnitude();
 };
+
+float toRadians(float angle);
+
+Point PolarCordinates(Point referencePoint, float angle, float distance);

@@ -20,7 +20,8 @@ public:
 	void DrawPixel(const UINT color, Point pos);
 	void Blit(Rect sourceRect, Point rasterPos, Draw& image);
 	void LoadAnimation(Draw& spriteSheet, Point rasterPos, UINT imageSizeWidth, UINT imageSizeHeight, XTime clock);
-	void LineNx(const UINT color, Point point1, Point point2);
+	void ParametricLine(Point point1, Point point2, const UINT startColor, const UINT endColor);
+	void LineNx(Point point1, Point point2, const UINT startColor, const UINT endColor);
 
 	UINT* GetSurface();
 	UINT GetPixels();

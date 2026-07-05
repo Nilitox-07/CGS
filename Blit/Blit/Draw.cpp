@@ -206,13 +206,74 @@ void Draw::LoadAnimation(Draw& spriteSheet, Point rasterPos, UINT imageSizeWidth
 	}
 }
 
-void Draw::LineNx(const UINT color, Point point1, Point point2)
+void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, const UINT endColor)
 {
 	if (point1.x == point2.x)
 	{
 		for (int y = fmin(point1.y, point2.y); y < fmin(point1.y, point2.y) + fabs(point1.y - point2.y); y++)
 		{
-			DrawPixel(color, Point(point1.x, y));
+			Pixels color(startColor, true);
+			Pixels maxColor(endColor, true);
+			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
+			DrawPixel(color.ARGB, Point(point1.x, y));
+		}
+		return;
+	}
+	else if (point1.y == point2.y)
+	{
+		for (int x = fmin(point1.x, point2.x); x < fmin(point1.x, point2.x) + fabs(point1.x - point2.x); x++)
+		{
+			Pixels color(startColor, true);
+			Pixels maxColor(endColor, true);
+			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
+			DrawPixel(color.ARGB, Point(x, point1.y));
+		}
+		return;
+	}
+	if (fabs(point1.x - point2.x) >= fabs(point1.y - point2.y))
+	{
+		for (int x = fmin(point1.x, point2.x); x < fmin(point1.x, point2.x) + fabs(point1.x - point2.x); x++)
+		{
+			float ratio = (x - fmin(point1.x, point2.x)) / (fabs(point1.x - point2.x));
+			
+			float y = std::lerp((fmin(point1.x, point2.x) == point1.x ? point1.y : point2.y), (fmin(point1.x, point2.x) == point2.x ? point1.y : point2.y), ratio);
+
+			//y = Lerp(startY, EndY, ratio)
+
+			Pixels color(startColor, true);
+			Pixels maxColor(endColor, true);
+			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
+			DrawPixel(color.ARGB, Point(x, std::floor(y + 0.5)));
+		}
+	}
+	else
+	{
+		for (int y = fmin(point1.y, point2.y); y < fmin(point1.y, point2.y) + fabs(point1.y - point2.y); y++)
+		{
+			float ratio = (y - fmin(point1.y, point2.y)) / (fabs(point1.y - point2.y));
+
+			float x = std::lerp((fmin(point1.y, point2.y) == point1.y ? point1.x : point2.x), (fmin(point1.y, point2.y) == point2.y ? point1.x : point2.x), ratio);
+
+			//y = Lerp(startY, EndY, ratio)
+
+			Pixels color(startColor, true);
+			Pixels maxColor(endColor, true);
+			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
+			DrawPixel(color.ARGB, Point(std::floor(x + 0.5), y));
+		}
+	}
+}
+
+void Draw::LineNx(Point point1, Point point2, const UINT startColor, const UINT endColor)
+{
+	if (point1.x == point2.x)
+	{
+		for (int y = fmin(point1.y, point2.y); y < fmin(point1.y, point2.y) + fabs(point1.y - point2.y); y++)
+		{
+			Pixels color(startColor, true);
+			Pixels maxColor(endColor, true);
+			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
+			DrawPixel(color.ARGB, Point(point1.x, y));
 		}
 		return;
 	}
@@ -222,14 +283,20 @@ void Draw::LineNx(const UINT color, Point point1, Point point2)
 	{
 		for (int x = fmin(point1.x, point2.x); x < fmin(point1.x, point2.x) + fabs(point1.x - point2.x); x++)
 		{
-			DrawPixel(color, Point(x, slope * x + intercept));
+			Pixels color(startColor, true);
+			Pixels maxColor(endColor, true);
+			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
+			DrawPixel(color.ARGB, Point(x, slope * x + intercept));
 		}
 	}
 	else
 	{
 		for (int y = fmin(point1.y, point2.y); y < fmin(point1.y, point2.y) + fabs(point1.y - point2.y); y++)
 		{
-			DrawPixel(color, Point((y - intercept)/slope, y));
+			Pixels color(startColor, true);
+			Pixels maxColor(endColor, true);
+			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
+			DrawPixel(color.ARGB, Point((y - intercept)/slope, y));
 		}
 	}
 }
