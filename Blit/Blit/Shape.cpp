@@ -46,6 +46,11 @@ float Shape::CalculateOffset()
 	return 90 - 180.0f / sides;
 }
 
+void Shape::SetVertices(std::vector<Point> _vertices)
+{
+	vertices = _vertices;
+}
+
 void Shape::DrawShape(Draw& screen, UINT startColor, UINT endColor)
 {
 	for (int i = 0; i < edges.size(); i++)
@@ -76,13 +81,15 @@ Circle::Circle(Point _position, float _radius) :
 	Shape(_position, 50, 0),
 	radius(_radius)
 {
-	CalculateVertices();
+	CalculateVertices(0, radius);
+	CalculateEdges();
 }
 
 Triangle::Triangle(std::vector<Point> _vertices) :
 	Shape(CalculateCentroid(_vertices), 3, 0)
 {
 	vertices = _vertices;
+	CalculateEdges();
 }
 
 Rectangles::Rectangles(Point _position, float orientation, UINT _width, UINT _height) :
@@ -95,10 +102,11 @@ Rectangles::Rectangles(Point _position, float orientation, UINT _width, UINT _he
 	CalculateEdges();
 }
 
-Polygon::Polygon(std::vector<Point> _vertices):
+CustomPolygon::CustomPolygon(std::vector<Point> _vertices):
 	Shape(CalculateCentroid(_vertices), _vertices.size(), 0)
 {
-	
+	SetVertices(_vertices);
+	CalculateEdges();
 }
 
 AutoPolygon::AutoPolygon(Point _position, UINT _sides, UINT _radius) :

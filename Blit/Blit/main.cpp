@@ -41,8 +41,10 @@ int main()
 	RS_Initialize("Nilo Garcia: Lab 2", width, height);
 	Draw screen(width, height);
 
-	AutoPolygon testPoly(Point(250, 250), 8, 150);
+	//AutoPolygon testPoly(Point(250, 250), 8, 150);
+	Circle testPoly(Point(250, 250), 100);
 	const std::vector<Point>& vertices = testPoly.GetVertices();
+
 
 	std::vector<Pixels> colors = { red, green, blue, yellow, purple, cyan };
 
@@ -53,9 +55,9 @@ int main()
 		Display(screen);
 
 
-		for (int i = 0; i < (int)testPoly.GetSides() / 2; i++)
+		for (int i = 0; i < (int)vertices.size() / 2; i++)
 		{
-			screen.ParametricLine(vertices[i], vertices[(i + ((int)testPoly.GetSides() / 2)) % (int)testPoly.GetSides()], colors[i % colors.size()].ARGB, colors[i % colors.size()].ARGB); 
+			//screen.ParametricLine(vertices[i], vertices[(i + ((int)testPoly.GetSides() / 2)) % (int)testPoly.GetSides()], colors[i % colors.size()].ARGB, colors[i % colors.size()].ARGB); 
 			// This doesnt connect all vertices correctly on a odd number of vertices/sides
 		}
 		testPoly.DrawShape(screen, red.ARGB, blue.ARGB);

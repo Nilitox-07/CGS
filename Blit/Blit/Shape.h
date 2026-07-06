@@ -17,6 +17,7 @@ protected:
 	void CalculateVertices(float offset = 0.0f, float radius = 0.0f);
 	void CalculateEdges();
 	float CalculateOffset();
+	void SetVertices(std::vector<Point> _vertices);
 
 	Point position;
 	UINT sides;
@@ -58,11 +59,11 @@ private:
 	UINT height;
 };
 
-class Polygon : public Shape
+class CustomPolygon : public Shape
 {
 public:
 
-	Polygon(std::vector<Point> _vertices);
+	CustomPolygon(std::vector<Point> _vertices);
 };
 
 class AutoPolygon : public Shape
