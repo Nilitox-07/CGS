@@ -13,7 +13,7 @@ Draw ConvertBGRAtoARGB(const UINT* texture, UINT textureWidth, UINT totalPixels)
 	_texture.assign(texture, texture + totalPixels);
 	for (int textureIndex = 0; textureIndex < totalPixels; textureIndex++)
 	{
-		image.DrawPixel(_texture[textureIndex].ARGB, Point(textureIndex, 0));
+		image.DrawPixel(_texture[textureIndex].ARGB, Vector2(textureIndex, 0));
 	}
 	return image;
 }

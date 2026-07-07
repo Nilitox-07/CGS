@@ -100,11 +100,11 @@ UINT Draw::GetID()
 
 UINT Draw::GetAnimationID()
 {
-	runningAnimations.push_back(Point());
+	runningAnimations.push_back(Vector2());
 	return runningAnimations.size() - 1;
 }
 
-Point& Draw::GetTrack(UINT _animationID, UINT _width, UINT _height, bool step)
+Vector2& Draw::GetTrack(UINT _animationID, UINT _width, UINT _height, bool step)
 {
 	// TODO: insert return statement here
 
@@ -131,7 +131,7 @@ Point& Draw::GetTrack(UINT _animationID, UINT _width, UINT _height, bool step)
 	return runningAnimations[_animationID];
 }
 
-UINT* Draw::GetPixel(Point pos)
+UINT* Draw::GetPixel(Vector2 pos)
 {
 	return &surface[_2Dto1D((int)pos.x, (int)pos.y)];
 }
@@ -172,12 +172,12 @@ UINT Draw::_2Dto1D(UINT x, UINT y)
 	return x + y * width;
 }
 
-void Draw::DrawPixel(const UINT color, Point pos)
+void Draw::DrawPixel(const UINT color, Vector2 pos)
 {
 	surface[_2Dto1D((int)pos.x, (int)pos.y)] = color;
 }
 
-void Draw::Blit(Rect sourceRect, Point rasterPos, Draw& image)
+void Draw::Blit(Rect sourceRect, Vector2 rasterPos, Draw& image)
 {
 	if (alphaBlending && image.alphaBlending)
 	{
@@ -185,11 +185,11 @@ void Draw::Blit(Rect sourceRect, Point rasterPos, Draw& image)
 		{
 			for (int x = 0; x < sourceRect.width && x + rasterPos.x < width; x++)
 			{
-				Pixels destination(*GetPixel(Point(x + rasterPos.x, y + rasterPos.y)), true);
-				Pixels source(*image.GetPixel(Point(x + sourceRect.pos.x, y + sourceRect.pos.y)), true);
+				Pixels destination(*GetPixel(Vector2(x + rasterPos.x, y + rasterPos.y)), true);
+				Pixels source(*image.GetPixel(Vector2(x + sourceRect.pos.x, y + sourceRect.pos.y)), true);
 				
 				destination.Lerp(source);
-				DrawPixel(destination.ARGB, Point(x + rasterPos.x, y + rasterPos.y));
+				DrawPixel(destination.ARGB, Vector2(x + rasterPos.x, y + rasterPos.y));
 			}
 		}
 	}
@@ -206,26 +206,26 @@ void Draw::Blit(Rect sourceRect, Point rasterPos, Draw& image)
 	}
 }
 
-void Draw::LoadAnimation(Draw& spriteSheet, Point rasterPos, UINT imageSizeWidth, UINT imageSizeHeight, XTime clock)
+void Draw::LoadAnimation(Draw& spriteSheet, Vector2 rasterPos, UINT imageSizeWidth, UINT imageSizeHeight, XTime clock)
 {
 	if (spriteSheet.isAnimation && spriteSheet.parentID == ID)
 	{
 		spriteSheet.animationTimer += clock.Delta();
 		if (spriteSheet.animationTimer >= 1 / spriteSheet.animationTimerMax)
 		{
-			Point& animationTrackCur = GetTrack(spriteSheet.animationID, spriteSheet.GetWidth() / imageSizeWidth, spriteSheet.GetHeight() / imageSizeHeight, true);
-			Blit(Rect(imageSizeWidth, imageSizeHeight, Point(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet);
+			Vector2& animationTrackCur = GetTrack(spriteSheet.animationID, spriteSheet.GetWidth() / imageSizeWidth, spriteSheet.GetHeight() / imageSizeHeight, true);
+			Blit(Rect(imageSizeWidth, imageSizeHeight, Vector2(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet);
 			spriteSheet.animationTimer = 0;
 		}
 		else
 		{
-			Point& animationTrackCur = GetTrack(spriteSheet.animationID, spriteSheet.GetWidth() / imageSizeWidth, spriteSheet.GetHeight() / imageSizeHeight, false);
-			Blit(Rect(imageSizeWidth, imageSizeHeight, Point(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet);
+			Vector2& animationTrackCur = GetTrack(spriteSheet.animationID, spriteSheet.GetWidth() / imageSizeWidth, spriteSheet.GetHeight() / imageSizeHeight, false);
+			Blit(Rect(imageSizeWidth, imageSizeHeight, Vector2(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet);
 		}
 	}
 }
 
-void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, const UINT endColor)
+void Draw::ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor)
 {
 	if (point1.x == point2.x)
 	{
@@ -234,7 +234,7 @@ void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, con
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Point(point1.x, y));
+			DrawPixel(color.ARGB, Vector2(point1.x, y));
 		}
 		return;
 	}
@@ -245,7 +245,7 @@ void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, con
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
-			DrawPixel(color.ARGB, Point(x, point1.y));
+			DrawPixel(color.ARGB, Vector2(x, point1.y));
 		}
 		return;
 	}
@@ -260,7 +260,7 @@ void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, con
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Point(x, std::floor(y + 0.5)));
+			DrawPixel(color.ARGB, Vector2(x, std::floor(y + 0.5)));
 		}
 	}
 	else
@@ -274,12 +274,12 @@ void Draw::ParametricLine(Point point1, Point point2, const UINT startColor, con
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
-			DrawPixel(color.ARGB, Point(std::floor(x + 0.5), y));
+			DrawPixel(color.ARGB, Vector2(std::floor(x + 0.5), y));
 		}
 	}
 }
 
-void Draw::LineNx(Point point1, Point point2, const UINT startColor, const UINT endColor)
+void Draw::LineNx(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor)
 {
 	if (point1.x == point2.x)
 	{
@@ -288,7 +288,7 @@ void Draw::LineNx(Point point1, Point point2, const UINT startColor, const UINT 
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Point(point1.x, y));
+			DrawPixel(color.ARGB, Vector2(point1.x, y));
 		}
 		return;
 	}
@@ -301,7 +301,7 @@ void Draw::LineNx(Point point1, Point point2, const UINT startColor, const UINT 
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
-			DrawPixel(color.ARGB, Point(x, slope * x + intercept));
+			DrawPixel(color.ARGB, Vector2(x, slope * x + intercept));
 		}
 	}
 	else
@@ -311,7 +311,7 @@ void Draw::LineNx(Point point1, Point point2, const UINT startColor, const UINT 
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Point((y - intercept)/slope, y));
+			DrawPixel(color.ARGB, Vector2((y - intercept)/slope, y));
 		}
 	}
 }

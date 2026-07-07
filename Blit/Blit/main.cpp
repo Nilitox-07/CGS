@@ -38,12 +38,12 @@ int main()
 
 	XTime clock = XTime();
 
-	RS_Initialize("Nilo Garcia: Lab 2", width, height);
+	RS_Initialize("Nilo Garcia: Lab 3", width, height);
 	Draw screen(width, height);
 
-	//AutoPolygon testPoly(Point(250, 250), 8, 150);
-	Circle testPoly(Point(250, 250), 100);
-	const std::vector<Point>& vertices = testPoly.GetVertices();
+	//AutoPolygon testPoly(Vector2(250, 250), 8, 150);
+	Circle testPoly(Vector2(250, 250), 100);
+	const std::vector<Vector2>& vertices = testPoly.GetVertices();
 
 
 	std::vector<Pixels> colors = { red, green, blue, yellow, purple, cyan };

@@ -1,13 +1,13 @@
 #include "Shape.h"
 
-Shape::Shape(Point _position, UINT _sides, float _orientation) :
+Shape::Shape(Vector2 _position, UINT _sides, float _orientation) :
 	position(_position),
 	sides(_sides),
 	orientation(_orientation)
 {
 }
 
-Point Shape::CalculateCentroid(std::vector<Point> _vertices)
+Vector2 Shape::CalculateCentroid(std::vector<Vector2> _vertices)
 {
 	float x = 0;
 	float y = 0;
@@ -20,7 +20,7 @@ Point Shape::CalculateCentroid(std::vector<Point> _vertices)
 	x /= (int)_vertices.size();
 	y /= (int)_vertices.size();
 
-	return Point(x, y);
+	return Vector2(x, y);
 }
 
 void Shape::CalculateVertices(float offset, float radius)
@@ -46,7 +46,7 @@ float Shape::CalculateOffset()
 	return 90 - 180.0f / sides;
 }
 
-void Shape::SetVertices(std::vector<Point> _vertices)
+void Shape::SetVertices(std::vector<Vector2> _vertices)
 {
 	vertices = _vertices;
 }
@@ -72,12 +72,12 @@ UINT Shape::GetSides()
 	return sides;
 }
 
-const std::vector<Point>& Shape::GetVertices()
+const std::vector<Vector2>& Shape::GetVertices()
 {
 	return vertices;
 }
 
-Circle::Circle(Point _position, float _radius) :
+Circle::Circle(Vector2 _position, float _radius) :
 	Shape(_position, 50, 0),
 	radius(_radius)
 {
@@ -85,31 +85,31 @@ Circle::Circle(Point _position, float _radius) :
 	CalculateEdges();
 }
 
-Triangle::Triangle(std::vector<Point> _vertices) :
+Triangle::Triangle(std::vector<Vector2> _vertices) :
 	Shape(CalculateCentroid(_vertices), 3, 0)
 {
 	vertices = _vertices;
 	CalculateEdges();
 }
 
-Rectangles::Rectangles(Point _position, float orientation, UINT _width, UINT _height) :
+Rectangles::Rectangles(Vector2 _position, float orientation, UINT _width, UINT _height) :
 	Shape(_position, 4, 0),
 	offset(CalculateOffset()),
 	width(_width),
 	height(_height)
 {
-	CalculateVertices(offset, Point(width / 2.0f, height / 2.0f).Magnitude());
+	CalculateVertices(offset, Vector2(width / 2.0f, height / 2.0f).Magnitude());
 	CalculateEdges();
 }
 
-CustomPolygon::CustomPolygon(std::vector<Point> _vertices):
+CustomPolygon::CustomPolygon(std::vector<Vector2> _vertices):
 	Shape(CalculateCentroid(_vertices), _vertices.size(), 0)
 {
 	SetVertices(_vertices);
 	CalculateEdges();
 }
 
-AutoPolygon::AutoPolygon(Point _position, UINT _sides, UINT _radius) :
+AutoPolygon::AutoPolygon(Vector2 _position, UINT _sides, UINT _radius) :
 	Shape(_position, _sides, 0),
 	offset(CalculateOffset()),
 	radius(_radius)

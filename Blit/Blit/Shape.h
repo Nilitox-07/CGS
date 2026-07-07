@@ -6,24 +6,24 @@ class Shape
 {
 public:
 
-	Shape(Point _position, UINT _sides, float _orientation);
+	Shape(Vector2 _position, UINT _sides, float _orientation);
 
 	void DrawShape(Draw& screen, UINT startColor, UINT endColor);
 	UINT GetSides();
-	const std::vector<Point>& GetVertices();
+	const std::vector<Vector2>& GetVertices();
 
 protected:
-	Point CalculateCentroid(std::vector<Point> _vertices);
+	Vector2 CalculateCentroid(std::vector<Vector2> _vertices);
 	void CalculateVertices(float offset = 0.0f, float radius = 0.0f);
 	void CalculateEdges();
 	float CalculateOffset();
-	void SetVertices(std::vector<Point> _vertices);
+	void SetVertices(std::vector<Vector2> _vertices);
 
-	Point position;
+	Vector2 position;
 	UINT sides;
 	float orientation;
-	std::vector<Point> vertices;
-	std::vector<std::array<Point, 2>> edges;
+	std::vector<Vector2> vertices;
+	std::vector<std::array<Vector2, 2>> edges;
 	
 };
 
@@ -31,7 +31,7 @@ class Circle : public Shape
 {
 public:
 
-	Circle(Point _position, float _radius);
+	Circle(Vector2 _position, float _radius);
 
 private:
 
@@ -42,14 +42,14 @@ class Triangle: public Shape
 {
 public:
 
-	Triangle(std::vector<Point> _vertices);
+	Triangle(std::vector<Vector2> _vertices);
 };
 
 class Rectangles : public Shape
 {
 public:
 
-	Rectangles(Point _position, float orientation, UINT width, UINT height);
+	Rectangles(Vector2 _position, float orientation, UINT width, UINT height);
 
 private:
 
@@ -63,14 +63,14 @@ class CustomPolygon : public Shape
 {
 public:
 
-	CustomPolygon(std::vector<Point> _vertices);
+	CustomPolygon(std::vector<Vector2> _vertices);
 };
 
 class AutoPolygon : public Shape
 {
 public:
 
-	AutoPolygon(Point _position, UINT _sides, UINT _radius);
+	AutoPolygon(Vector2 _position, UINT _sides, UINT _radius);
 
 private:
 

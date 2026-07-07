@@ -142,7 +142,7 @@
     <ClCompile Include="Draw.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pixels.cpp" />
-    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="RasterSurface.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="XTime.cpp" />
@@ -151,7 +151,7 @@
     <ClInclude Include="Draw.h" />
     <ClInclude Include="fire_02.h" />
     <ClInclude Include="pixels.h" />
-    <ClInclude Include="Point.h" />
+    <ClInclude Include="Vector2.h" />
     <ClInclude Include="RasterSurface.h" />
     <ClInclude Include="Rect.h" />
     <ClInclude Include="Shape.h" />

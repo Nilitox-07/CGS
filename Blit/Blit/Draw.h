@@ -18,11 +18,11 @@ public:
 
 	void Fill(const UINT color);
 	UINT _2Dto1D(UINT x, UINT y);
-	void DrawPixel(const UINT color, Point pos);
-	void Blit(Rect sourceRect, Point rasterPos, Draw& image);
-	void LoadAnimation(Draw& spriteSheet, Point rasterPos, UINT imageSizeWidth, UINT imageSizeHeight, XTime clock);
-	void ParametricLine(Point point1, Point point2, const UINT startColor, const UINT endColor);
-	void LineNx(Point point1, Point point2, const UINT startColor, const UINT endColor);
+	void DrawPixel(const UINT color, Vector2 pos);
+	void Blit(Rect sourceRect, Vector2 rasterPos, Draw& image);
+	void LoadAnimation(Draw& spriteSheet, Vector2 rasterPos, UINT imageSizeWidth, UINT imageSizeHeight, XTime clock);
+	void ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor);
+	void LineNx(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor);
 
 	UINT* GetSurface();
 	UINT GetPixels();
@@ -30,8 +30,8 @@ public:
 	UINT GetHeight();
 	UINT GetID();
 	UINT GetAnimationID();
-	Point& GetTrack(UINT _animationID, UINT _width, UINT _height, bool step);
-	UINT* GetPixel(Point pos);
+	Vector2& GetTrack(UINT _animationID, UINT _width, UINT _height, bool step);
+	UINT* GetPixel(Vector2 pos);
 	void SetImage(UINT* image, UINT _width, UINT _height);
 	void Resize(UINT _width, UINT _height);
 
@@ -53,7 +53,7 @@ private:
 	double animationTimer;
 	double animationTimerMax;
 
-	std::vector<Point> runningAnimations;
+	std::vector<Vector2> runningAnimations;
 
 	bool alphaBlending;
 

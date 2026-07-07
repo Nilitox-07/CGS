@@ -1,15 +1,15 @@
 #pragma once
 #include "Types.h"
-#include "Point.h"
+#include "Vector2.h"
 #include <math.h>
 
 struct Rect
 {
 	UINT width;
 	UINT height;
-	Point pos;
+	Vector2 pos;
 
-	Rect(UINT _width, UINT _height, Point _pos = Point())
+	Rect(UINT _width, UINT _height, Vector2 _pos = Vector2())
 	{
 		width = _width;
 		height = _height;

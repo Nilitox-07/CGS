@@ -33,7 +33,7 @@
     <ClCompile Include="Shape.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Point.cpp">
+    <ClCompile Include="Vector2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pixels.cpp">
@@ -68,7 +68,7 @@
     <ClInclude Include="Shape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
+    <ClInclude Include="Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Rect.h">
