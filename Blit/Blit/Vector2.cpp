@@ -29,34 +29,51 @@ Vector2& Vector2::operator=(const Vector2& other)
 	return *this;
 }
 
-Vector2& Vector2::operator+(Vector2& other)
+Vector2 Vector2::operator+(Vector2& other)
 {
-	// TODO: insert return statement here
+	Vector2 result = Vector2(x + other.x, y + other.y);
+
+	return result;
 }
 
 Vector2& Vector2::operator+=(const Vector2& other)
 {
-	// TODO: insert return statement here
+	x += other.x;
+	y += other.y;
+
+	return *this;
 }
 
-Vector2& Vector2::operator-(Vector2& other)
+Vector2 Vector2::operator-(Vector2& other)
 {
-	// TODO: insert return statement here
+	Vector2 result = Vector2(x - other.x, y - other.y);
+
+	return result;
 }
 
 Vector2& Vector2::operator-=(const Vector2& other)
 {
-	// TODO: insert return statement here
+	x -= other.x;
+	y -= other.y;
+
+	return *this;
 }
 
-Vector2& Vector2::operator*(const Vector2& other)
+float Vector2::operator*(const Vector2& other)
 {
-	// TODO: insert return statement here
+	return x * other.x + y * other.y;
 }
 
 float Vector2::Magnitude()
 {
 	return sqrt(pow(x, 2) + pow(y, 2));
+}
+
+Vector2 Vector2::Normalize()
+{
+	if (Magnitude() > 0)
+		return Vector2(x / Magnitude(), y / Magnitude());
+	return Vector2();
 }
 
 float toRadians(float angle)

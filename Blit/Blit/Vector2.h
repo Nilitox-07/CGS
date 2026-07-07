@@ -13,13 +13,14 @@ struct Vector2
 	Vector2(float _x, float _y);
 	Vector2(const Vector2& other);
 	Vector2& operator=(const Vector2& other);
-	Vector2& operator+(Vector2& other);
+	Vector2 operator+(Vector2& other);
 	Vector2& operator+=(const Vector2& other);
-	Vector2& operator-(Vector2& other);
+	Vector2 operator-(Vector2& other);
 	Vector2& operator-=(const Vector2& other);
-	Vector2& operator*(const Vector2& other);
+	float operator*(const Vector2& other);
 
 	float Magnitude();
+	Vector2 Normalize();
 };
 
 float toRadians(float angle);
