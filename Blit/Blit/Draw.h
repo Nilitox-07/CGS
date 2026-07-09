@@ -1,6 +1,6 @@
 #pragma once
 #include "Types.h"
-#include "Rect.h"
+#include "NxMath.h"
 #include "pixels.h"
 #include <cstring>
 #include <vector>
