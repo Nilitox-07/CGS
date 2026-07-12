@@ -4,6 +4,7 @@
 #include "tiles_12.h"
 #include "pixels.h"
 #include "fire_02.h"
+#include "NxMath.h"
 
 Draw ConvertBGRAtoARGB(const UINT* texture, UINT textureWidth, UINT totalPixels)
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include "Draw.h"
 #include <array>
+#include "NxMath.h"
 
 class Shape
 {

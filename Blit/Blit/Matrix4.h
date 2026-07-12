@@ -36,7 +36,12 @@ public:
 
     Matrix4 Inverse() const;
     float Determinant() const;
+    Vector3 TransformPoint(const Vector3& vec) const;
+    Vector3 ProjectPoint(const Vector3& vec) const;
     float Trace() const;
+    Vector3 Forward();
+    Vector3 Right();
+    Vector3 Up();
 
     static Matrix4 Indentity();
     static Matrix4 Translation(Vector3 position);
@@ -44,6 +49,7 @@ public:
     static Matrix4 RotationX(float radians);
     static Matrix4 RotationY(float radians);
     static Matrix4 RotationZ(float radians);
+    static Matrix4 Perspective(float fov, float aspect, float nearPlane, float farPlane);
 
 private:
 

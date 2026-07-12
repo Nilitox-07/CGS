@@ -1,9 +1,11 @@
 #pragma once
 #include "Types.h"
-#include "NxMath.h"
 #include "pixels.h"
 #include <cstring>
 #include <vector>
+
+struct Vector2;
+struct Rect;
 
 class Draw
 {
@@ -26,8 +28,8 @@ public:
 
 	UINT* GetSurface();
 	UINT GetPixels();
-	UINT GetWidth();
-	UINT GetHeight();
+	UINT GetWidth() const;
+	UINT GetHeight() const;
 	UINT GetID();
 	UINT GetAnimationID();
 	Vector2& GetTrack(UINT _animationID, UINT _width, UINT _height, bool step);

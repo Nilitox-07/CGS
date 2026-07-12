@@ -1,5 +1,6 @@
 #include "Draw.h"
 #include <iostream>
+#include "NxMath.h"
 
 UINT Draw::ID_Count = 0;
 
@@ -83,12 +84,12 @@ UINT Draw::GetPixels()
 	return numPixels;
 }
 
-UINT Draw::GetWidth()
+UINT Draw::GetWidth() const
 {
 	return width;
 }
 
-UINT Draw::GetHeight()
+UINT Draw::GetHeight() const
 {
 	return height;
 }
@@ -174,7 +175,9 @@ UINT Draw::_2Dto1D(UINT x, UINT y)
 
 void Draw::DrawPixel(const UINT color, Vector2 pos)
 {
-	surface[_2Dto1D((int)pos.x, (int)pos.y)] = color;
+	if (pos.x >= width || pos.x < 0 || pos.y >= height || pos.y < 0)
+		return;
+	surface[_2Dto1D(std::floor(pos.x), std::floor(pos.y))] = color;
 }
 
 void Draw::Blit(Rect sourceRect, Vector2 rasterPos, Draw& image)
