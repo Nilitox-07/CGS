@@ -172,7 +172,7 @@ int main()
 
 			Vector3 end = projectionMatrix.ProjectPoint(viewMatrix.TransformPoint(Corners[(i + 1) % 4]));
 
-			screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor, FLT_MAX / 2);
+			//screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor, FLT_MAX / 2);
 		}
 
 		for (int i = 0; i < 18; i++)
@@ -181,7 +181,7 @@ int main()
 
 			Vector3 end = projectionMatrix.ProjectPoint(viewMatrix.TransformPoint(borderVertices[i] + offsetVectors[i % 2]));
 
-			screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor, FLT_MAX / 2);
+			//screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor, FLT_MAX / 2);
 		}
 
 		// Cube
@@ -194,7 +194,7 @@ int main()
 
 				if (i < other)
 				{
-					screen.LineNx(projectedCube1[i].CartesianTo2D(screen), projectedCube1[other].CartesianTo2D(screen), cube1Color, cube1Color, FLT_MAX / 2);
+					//screen.LineNx(projectedCube1[i].CartesianTo2D(screen), projectedCube1[other].CartesianTo2D(screen), cube1Color, cube1Color, FLT_MAX / 2);
 				}
 			}
 		}
