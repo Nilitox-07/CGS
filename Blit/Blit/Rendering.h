@@ -23,15 +23,13 @@ void DrawTriangle(Vector3 a, Vector3 b, Vector3 c, UINT color, Draw& screen, flo
 
 			Barycentric effect = FindBarycentric(a2D, b2D, c2D, currPosition);
 
-			
-
 			if (effect.alpha >= 0 && effect.alpha <= 1 &&
 				effect.beta >= 0 && effect.beta <= 1 &&
 				effect.gamma >= 0 && effect.gamma <= 1)
 			{
 				float depth = effect.alpha * a.z + effect.beta * b.z + effect.gamma * c.z;
 
-				screen.DrawPixel(color, currPosition, depth);
+				screen.DrawPixel(color, currPosition, -depth);
 			}
 		}
 	}
