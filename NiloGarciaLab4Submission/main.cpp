@@ -41,7 +41,7 @@ int main()
 
 	XTime clock = XTime();
 
-	RS_Initialize("Nilo Garcia: Lab 3", width, height);
+	RS_Initialize("Nilo Garcia: Lab 4", width, height);
 	Draw screen(width, height, Draw::NEEDS_DEPTH);
 
 	std::vector<Pixels> colors = { red, green, blue, yellow, purple, cyan };
@@ -173,6 +173,7 @@ int main()
 		if (GetAsyncKeyState('4') & 0x8000)
 		{
 			current = 4;
+			screen.TurnOnDepth();
 		}
 
 		screen.Fill(black.ARGB);
