@@ -140,8 +140,29 @@ int main()
 	Vector3 position = Vector3(0, 0, -1);
 	Vector3 rotation = Vector3(-18, 0, 0);
 
+	int current = 1;
+
 	while (RS_Update(screen.GetSurface(), screen.GetPixels()))
 	{
+		if (GetAsyncKeyState('1') & 0x8000)
+		{
+			current = 1;
+		}
+		if (GetAsyncKeyState('2') & 0x8000)
+		{
+			current = 2;
+			screen.TurnOffDepth();
+		}
+		if (GetAsyncKeyState('3') & 0x8000)
+		{
+			current = 3;
+			screen.TurnOnDepth();
+		}
+		if (GetAsyncKeyState('4') & 0x8000)
+		{
+			current = 4;
+		}
+
 		screen.Fill(black.ARGB);
 
 		screen.ClearDepthBuffer();
@@ -199,13 +220,16 @@ int main()
 			}
 		}
 
-		for (int i = 0; i < 36; i += 3)
+		if (current == 2 || current == 3)
 		{
-			Vector3 a = projectedCube1[cubeTriangles[i]];
-			Vector3 b = projectedCube1[cubeTriangles[i + 1]];
-			Vector3 c = projectedCube1[cubeTriangles[i + 2]];
+			for (int i = 0; i < 36; i += 3)
+			{
+				Vector3 a = projectedCube1[cubeTriangles[i]];
+				Vector3 b = projectedCube1[cubeTriangles[i + 1]];
+				Vector3 c = projectedCube1[cubeTriangles[i + 2]];
 
-			DrawTriangle(a, b, c, colors[i / 6].ARGB, screen, screen.GetDepthBuffer());
+				DrawTriangle(a, b, c, colors[i / 6].ARGB, screen, screen.GetDepthBuffer());
+			}
 		}
 
 		clock.Signal();

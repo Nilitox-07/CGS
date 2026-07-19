@@ -155,10 +155,11 @@ void Draw::SetAnimationTimer(double _animationTimerMax, Draw* _parent)
 
 void Draw::ClearDepthBuffer()
 {
-	for (int i = 0; i < width * height; i++)
-	{
-		depthBuffer[i] = FLT_MAX;
-	}
+	if (flags & NEEDS_DEPTH)
+		for (int i = 0; i < width * height; i++)
+		{
+			depthBuffer[i] = FLT_MAX;
+		}
 }
 
 void Draw::TurnOnDepth()
