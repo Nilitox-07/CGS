@@ -8,6 +8,16 @@ char Draw::ALPHA_BLENDING = 0b00000001;
 char Draw::IS_ANIMATION = 0b00000010;
 char Draw::NEEDS_DEPTH = 0b00000100;
 
+Draw::Draw():
+	width(0),
+	height(0),
+	numPixels(0),
+	surface(nullptr),
+	flags(0)
+{
+	
+}
+
 Draw::Draw(UINT _width, UINT _height, char _flags) :
 	width(_width),
 	height(_height),
@@ -42,9 +52,28 @@ Draw::Draw(const Draw& other) :
 	surface(new UINT[numPixels]),
 	flags(other.flags)
 {
-	memcpy(surface, other.surface, numPixels);
+	memcpy(surface, other.surface, numPixels * sizeof(UINT));
 	Draw::ID_Count++;
 	ID = Draw::ID_Count;
+}
+
+Draw& Draw::operator=(const Draw& other)
+{
+	// Not fully implemented. Just to assign values on texture
+	if (this == &other)
+		return *this;
+
+	delete[] surface;
+
+	width = other.width;
+	height = other.height;
+	numPixels = other.numPixels;
+
+	surface = new UINT[numPixels];
+
+	memcpy(surface, other.surface, numPixels * sizeof(UINT));
+
+	return *this;
 }
 
 Draw::~Draw()

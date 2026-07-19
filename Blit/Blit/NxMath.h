@@ -33,3 +33,23 @@ struct Barycentric
 	}
 };
 
+struct Vertex
+{
+	Vector3 position;
+	Vector2 uv;
+
+	Vertex() :
+		position(Vector3()),
+		uv(Vector2())
+	{
+
+	}
+
+	Vertex(Vector3 _position, Vector2 _uv):
+		position(_position),
+		uv(_uv)
+	{
+
+	}
+};
+

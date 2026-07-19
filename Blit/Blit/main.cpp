@@ -46,6 +46,18 @@ int main()
 
 	std::vector<Pixels> colors = { red, green, blue, yellow, purple, cyan };
 
+	// Material/Textures
+
+	std::vector<Draw> materials;
+
+	for (int currColor = 0; currColor < colors.size(); currColor++)
+	{
+		materials.push_back(Draw(256, 256));
+		materials[currColor].Fill(colors[currColor].ARGB);
+	}
+
+	std::vector<Draw> textures = { dragon, tree, materials[0], materials[0], flower, celestial };
+
 	// Grid
 
 	UINT gridColor = green.ARGB;
@@ -92,23 +104,23 @@ int main()
 
 	int cubeTriangles[36] =
 	{
-		0, 1, 3,
-		0, 3, 2,
+		0,1,2,
+		0,2,3,
 
-		0, 2, 6,
-		0, 6, 4,
+		4,5,6,
+		4,6,7,
 
-		1, 5, 7,
-		1, 7, 3,
+		8,9,10,
+		8,10,11,
 
-		0, 4, 5,
-		0, 5, 1,
+		12,13,14,
+		12,14,15,
 
-		2, 3, 7,
-		2, 7, 6,
+		16,17,18,
+		16,18,19,
 
-		4, 6, 7,
-		4, 7, 5
+		20,21,22,
+		20,22,23
 	};
 
 	float angle1 = 0.0f;
@@ -171,9 +183,9 @@ int main()
 
 		// Updating Cube
 
-		angle1 += clock.Delta();
+		angle1 += clock.Delta() * 45;
 		
-		cube1Matrix = Matrix4::Translation(Vector3(0, -0.25f, 0)) * Matrix4::RotationY(angle1);
+		cube1Matrix = Matrix4::Translation(Vector3(0, -0.25f, 0)) * Matrix4::RotationY(angle1 * std::numbers::pi_v<float> / 180.0f);
 
 		for (int i = 0; i < 8; i++)
 		{
@@ -184,6 +196,45 @@ int main()
 			projectedCube1[i] = projectionMatrix.ProjectPoint(viewCube1[i]);
 
 		}
+
+		Vertex cubeVerticesFaces[24] =
+		{
+			// +X
+			Vertex(projectedCube1[2], Vector2(0,0)),
+			Vertex(projectedCube1[3], Vector2(1,0)),
+			Vertex(projectedCube1[1], Vector2(1,1)),
+			Vertex(projectedCube1[0], Vector2(0,1)),
+
+			// -X
+			Vertex(projectedCube1[4], Vector2(1,1)),
+			Vertex(projectedCube1[5], Vector2(0,1)),
+			Vertex(projectedCube1[7], Vector2(0,0)),
+			Vertex(projectedCube1[6], Vector2(1,0)),
+
+			// +Y
+			Vertex(projectedCube1[0], Vector2(0,0)),
+			Vertex(projectedCube1[1], Vector2(1,0)),
+			Vertex(projectedCube1[5], Vector2(1,1)),
+			Vertex(projectedCube1[4], Vector2(0,1)),
+
+			// -Y
+			Vertex(projectedCube1[6], Vector2(0,1)),
+			Vertex(projectedCube1[7], Vector2(1,1)),
+			Vertex(projectedCube1[3], Vector2(1,0)),
+			Vertex(projectedCube1[2], Vector2(0,0)),
+
+			// +Z
+			Vertex(projectedCube1[0], Vector2(1,1)),
+			Vertex(projectedCube1[2], Vector2(1,0)),
+			Vertex(projectedCube1[6], Vector2(0,0)),
+			Vertex(projectedCube1[4], Vector2(0,1)),
+
+			// -Z
+			Vertex(projectedCube1[1], Vector2(0,1)),
+			Vertex(projectedCube1[5], Vector2(1,1)),
+			Vertex(projectedCube1[7], Vector2(1,0)),
+			Vertex(projectedCube1[3], Vector2(0,0))
+		};
 
 		// Grid
 
@@ -207,15 +258,18 @@ int main()
 
 		// Cube
 
-		for (int i = 0; i < 8; i++)
+		if (current == 1)
 		{
-			for (int bit = 0; bit < 3; bit++)
+			for (int i = 0; i < 8; i++)
 			{
-				int other = i ^ (1 << bit);
-
-				if (i < other)
+				for (int bit = 0; bit < 3; bit++)
 				{
-					screen.LineNx(projectedCube1[i].CartesianTo2D(screen), projectedCube1[other].CartesianTo2D(screen), cube1Color, cube1Color, FLT_MAX / 2);
+					int other = i ^ (1 << bit);
+
+					if (i < other)
+					{
+						screen.LineNx(projectedCube1[i].CartesianTo2D(screen), projectedCube1[other].CartesianTo2D(screen), cube1Color, cube1Color, FLT_MAX / 2);
+					}
 				}
 			}
 		}
@@ -224,11 +278,23 @@ int main()
 		{
 			for (int i = 0; i < 36; i += 3)
 			{
-				Vector3 a = projectedCube1[cubeTriangles[i]];
-				Vector3 b = projectedCube1[cubeTriangles[i + 1]];
-				Vector3 c = projectedCube1[cubeTriangles[i + 2]];
+				Vertex a = cubeVerticesFaces[cubeTriangles[i]];
+				Vertex b = cubeVerticesFaces[cubeTriangles[i + 1]];
+				Vertex c = cubeVerticesFaces[cubeTriangles[i + 2]];
 
-				DrawTriangle(a, b, c, colors[i / 6].ARGB, screen, screen.GetDepthBuffer());
+				DrawTriangle(a, b, c, materials[i / 6], screen);
+			}
+		}
+
+		if (current == 4)
+		{
+			for (int i = 0; i < 36; i += 3)
+			{
+				Vertex a = cubeVerticesFaces[cubeTriangles[i]];
+				Vertex b = cubeVerticesFaces[cubeTriangles[i + 1]];
+				Vertex c = cubeVerticesFaces[cubeTriangles[i + 2]];
+
+				DrawTriangle(a, b, c, textures[i / 6], screen);
 			}
 		}
 

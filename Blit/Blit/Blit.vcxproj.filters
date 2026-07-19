@@ -92,5 +92,17 @@
     <ClInclude Include="Rendering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="treeolife.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="celestial.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="flower.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="greendragon.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

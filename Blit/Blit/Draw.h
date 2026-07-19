@@ -16,9 +16,11 @@ public:
 	static char IS_ANIMATION;
 	static char NEEDS_DEPTH;
 
+	Draw();
 	Draw(UINT width, UINT height, char _flags = 0b00000000);
 	Draw(Rect imageRect, char _flags = 0b00000000);
 	Draw(const Draw& other);
+	Draw& operator=(const Draw& other);
 	~Draw();
 
 	void Fill(const UINT color);
@@ -48,9 +50,6 @@ public:
 	static int _2Dto1D(UINT x, UINT y, UINT width);
 
 private:
-
-
-	Draw& operator=(const Draw&) = delete;
 
 	UINT numPixels;
 	UINT* surface;

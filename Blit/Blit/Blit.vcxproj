@@ -150,12 +150,16 @@
     <ClCompile Include="XTime.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="celestial.h" />
     <ClInclude Include="Draw.h" />
     <ClInclude Include="fire_02.h" />
+    <ClInclude Include="flower.h" />
+    <ClInclude Include="greendragon.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="NxMath.h" />
     <ClInclude Include="pixels.h" />
     <ClInclude Include="Rendering.h" />
+    <ClInclude Include="treeolife.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="RasterSurface.h" />
     <ClInclude Include="Rect.h" />
