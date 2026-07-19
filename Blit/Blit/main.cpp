@@ -7,6 +7,7 @@
 #include <iostream>
 #include "NxMath.h"
 #include <numbers>
+#include "Rendering.h"
 
 void Display(Draw& screen);
 
@@ -35,13 +36,13 @@ int main()
 
 	ConvertImages();
 
-	UINT width = 500;
+	UINT width = 600;
 	UINT height = 500;
 
 	XTime clock = XTime();
 
 	RS_Initialize("Nilo Garcia: Lab 3", width, height);
-	Draw screen(width, height);
+	Draw screen(width, height, Draw::NEEDS_DEPTH);
 
 	std::vector<Pixels> colors = { red, green, blue, yellow, purple, cyan };
 
@@ -89,37 +90,35 @@ int main()
 		Vector3(-0.25f, -0.25f, -0.25f)
 	};
 
+	int cubeTriangles[36] =
+	{
+		0, 1, 3,
+		0, 3, 2,
+
+		0, 2, 6,
+		0, 6, 4,
+
+		1, 5, 7,
+		1, 7, 3,
+
+		0, 4, 5,
+		0, 5, 1,
+
+		2, 3, 7,
+		2, 7, 6,
+
+		4, 6, 7,
+		4, 7, 5
+	};
+
 	float angle1 = 0.0f;
 
-	UINT cube1Color = yellow.ARGB;
+	UINT cube1Color = red.ARGB;
 
 	Matrix4 cube1Matrix = Matrix4::Translation(Vector3(0, -0.25f, 0)) * Matrix4::RotationY(angle1);
 	Vector3 worldCube1[8];
 	Vector3 viewCube1[8];
 	Vector3 projectedCube1[8];
-
-	// Cube 2
-
-	Vector3 cube2[8] =
-	{
-		Vector3(0.25f, 0.25f, 0.25f),
-		Vector3(0.25f, 0.25f, -0.25f),
-		Vector3(0.25f, -0.25f, 0.25f),
-		Vector3(0.25f, -0.25f, -0.25f),
-		Vector3(-0.25f, 0.25f, 0.25f),
-		Vector3(-0.25f, 0.25f, -0.25f),
-		Vector3(-0.25f, -0.25f, 0.25f),
-		Vector3(-0.25f, -0.25f, -0.25f)
-	};
-
-	float angle2 = 0.0f;
-
-	UINT cube2Color = purple.ARGB;
-
-	Matrix4 cube2Matrix = Matrix4::Translation(Vector3(0, -0.25f, 0)) * Matrix4::RotationY(angle2);
-	Vector3 worldCube2[8];
-	Vector3 viewCube2[8];
-	Vector3 projectedCube2[8];
 
 	// Camara
 
@@ -141,63 +140,28 @@ int main()
 	Vector3 position = Vector3(0, 0, -1);
 	Vector3 rotation = Vector3(-18, 0, 0);
 
-	bool updateCamara = true;
-
-	float maxForward = 0.5f;
-	float currentForward = 0;
-
-	float originalSpeed = 0.2;
-	float speed = originalSpeed;
-
 	while (RS_Update(screen.GetSurface(), screen.GetPixels()))
 	{
 		screen.Fill(black.ARGB);
+
+		screen.ClearDepthBuffer();
 
 		Display(screen);
 
 		// Updating Cube
 
 		angle1 += clock.Delta();
-		angle2 += clock.Delta() / 2.0f;
-
+		
 		cube1Matrix = Matrix4::Translation(Vector3(0, -0.25f, 0)) * Matrix4::RotationY(angle1);
-		cube2Matrix = Matrix4::Translation(Vector3(3.0f, -0.25f, 3.0f)) * Matrix4::RotationZ(angle2) * Matrix4::RotationY(angle1) * Matrix4::Scale(Vector3(2, 2, 2));
-		if (GetAsyncKeyState(VK_LSHIFT) & 0x8000)
-		{
-			speed = originalSpeed * 5l;
-		}
-		else
-		{
-			speed = originalSpeed;
-		}
-		if (GetAsyncKeyState('W') & 0x8000 && currentForward < maxForward)
-		{
-			viewMatrix *= Matrix4::Translation(-viewMatrix.Forward() * speed * clock.Delta());
-			currentForward += speed * clock.Delta();
-		}
-		if (GetAsyncKeyState('S') & 0x8000)
-		{
-			viewMatrix *= Matrix4::Translation(viewMatrix.Forward() * speed * clock.Delta());
-			currentForward -= speed * clock.Delta();
-		}
-		if (GetAsyncKeyState('D') & 0x8000)
-		{
-			viewMatrix *= Matrix4::Translation(viewMatrix.Right() * speed * clock.Delta());
-		}
-		if (GetAsyncKeyState('A') & 0x8000)
-		{
-			viewMatrix *= Matrix4::Translation(-viewMatrix.Right() * speed * clock.Delta());
-		}
 
 		for (int i = 0; i < 8; i++)
 		{
+			// Shader
+
 			worldCube1[i] = cube1Matrix.TransformPoint(cube1[i]);
 			viewCube1[i] = viewMatrix.TransformPoint(worldCube1[i]);
 			projectedCube1[i] = projectionMatrix.ProjectPoint(viewCube1[i]);
 
-			worldCube2[i] = cube2Matrix.TransformPoint(cube2[i]);
-			viewCube2[i] = viewMatrix.TransformPoint(worldCube2[i]);
-			projectedCube2[i] = projectionMatrix.ProjectPoint(viewCube2[i]);
 		}
 
 		// Grid
@@ -208,7 +172,7 @@ int main()
 
 			Vector3 end = projectionMatrix.ProjectPoint(viewMatrix.TransformPoint(Corners[(i + 1) % 4]));
 
-			screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor);
+			screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor, FLT_MAX / 2);
 		}
 
 		for (int i = 0; i < 18; i++)
@@ -217,7 +181,7 @@ int main()
 
 			Vector3 end = projectionMatrix.ProjectPoint(viewMatrix.TransformPoint(borderVertices[i] + offsetVectors[i % 2]));
 
-			screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor);
+			screen.LineNx(start.CartesianTo2D(screen), end.CartesianTo2D(screen), gridColor, gridColor, FLT_MAX / 2);
 		}
 
 		// Cube
@@ -230,10 +194,18 @@ int main()
 
 				if (i < other)
 				{
-					screen.LineNx(projectedCube1[i].CartesianTo2D(screen), projectedCube1[other].CartesianTo2D(screen), cube1Color, cube2Color);
-					screen.LineNx(projectedCube2[i].CartesianTo2D(screen), projectedCube2[other].CartesianTo2D(screen), cube2Color, cube1Color);
+					screen.LineNx(projectedCube1[i].CartesianTo2D(screen), projectedCube1[other].CartesianTo2D(screen), cube1Color, cube1Color, FLT_MAX / 2);
 				}
 			}
+		}
+
+		for (int i = 0; i < 36; i += 3)
+		{
+			Vector3 a = projectedCube1[cubeTriangles[i]];
+			Vector3 b = projectedCube1[cubeTriangles[i + 1]];
+			Vector3 c = projectedCube1[cubeTriangles[i + 2]];
+
+			DrawTriangle(a, b, c, colors[i / 6].ARGB, screen, screen.GetDepthBuffer());
 		}
 
 		clock.Signal();

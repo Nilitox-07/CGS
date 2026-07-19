@@ -4,6 +4,7 @@
 #include <numbers>
 
 struct Vector2;
+struct Barycentric;
 class Draw;
 
 struct Vector3
@@ -39,3 +40,4 @@ struct Vector3
 
 };
 
+Barycentric FindBarycentric(Vector2 a, Vector2 b, Vector2 c, Vector2 point);

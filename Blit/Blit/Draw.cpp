@@ -4,65 +4,43 @@
 
 UINT Draw::ID_Count = 0;
 
-Draw::Draw(UINT _width, UINT _height, bool _alphaBlending, bool _isAnimation, double _animationTimerMax, Draw* _parent) :
+char Draw::ALPHA_BLENDING = 0b00000001;
+char Draw::IS_ANIMATION = 0b00000010;
+char Draw::NEEDS_DEPTH = 0b00000100;
+
+Draw::Draw(UINT _width, UINT _height, char _flags) :
 	width(_width),
 	height(_height),
 	numPixels(_width* _height),
 	surface(new UINT[numPixels]),
-	alphaBlending(_alphaBlending),
-	ID(0),
-	isAnimation(_isAnimation),
-	parentID(0),
-	animationID(0),
-	animationTrack(0),
-	animationTimer(_animationTimerMax),
-	animationTimerMax(_animationTimerMax)
+	flags(_flags)
 {
 	Draw::ID_Count++;
 	ID = Draw::ID_Count;
-	if (_isAnimation)
+	if (flags & NEEDS_DEPTH)
 	{
-		parentID = _parent->GetID();
-		animationID = _parent->GetAnimationID();
+		depthBuffer = new float[width * height];
 	}
 }
 
-Draw::Draw(Rect imageRect, bool _alphaBlending, bool _isAnimation, double _animationTimerMax, Draw* _parent) :
+Draw::Draw(Rect imageRect, char _flags) :
 	width(imageRect.width),
 	height(imageRect.height),
 	numPixels(imageRect.width* imageRect.height),
 	surface(new UINT[numPixels]),
-	alphaBlending(_alphaBlending),
-	ID(0),
-	isAnimation(_isAnimation),
-	parentID(0),
-	animationID(0),
-	animationTrack(0),
-	animationTimer(_animationTimerMax),
-	animationTimerMax(_animationTimerMax)
+	flags(_flags)
 {
 	Draw::ID_Count++;
 	ID = Draw::ID_Count;
-	if (_isAnimation)
-	{
-		parentID = _parent->GetID();
-		animationID = _parent->GetAnimationID();
-	}
+	
 }
 
-Draw::Draw(const Draw& other):
+Draw::Draw(const Draw& other) :
 	width(other.width),
 	height(other.height),
-	numPixels(other.width * other.height),
+	numPixels(other.width* other.height),
 	surface(new UINT[numPixels]),
-	alphaBlending(other.alphaBlending),
-	ID(0),
-	isAnimation(false),
-	parentID(0),
-	animationID(0),
-	animationTrack(0),
-	animationTimer(other.animationTimerMax),
-	animationTimerMax(other.animationTimerMax)
+	flags(other.flags)
 {
 	memcpy(surface, other.surface, numPixels);
 	Draw::ID_Count++;
@@ -72,6 +50,8 @@ Draw::Draw(const Draw& other):
 Draw::~Draw()
 {
 	delete[] surface;
+	if (flags & NEEDS_DEPTH)
+		delete[] depthBuffer;
 }
 
 UINT* Draw::GetSurface()
@@ -103,6 +83,11 @@ UINT Draw::GetAnimationID()
 {
 	runningAnimations.push_back(Vector2());
 	return runningAnimations.size() - 1;
+}
+
+float* Draw::GetDepthBuffer()
+{
+	return depthBuffer;
 }
 
 Vector2& Draw::GetTrack(UINT _animationID, UINT _width, UINT _height, bool step)
@@ -159,6 +144,52 @@ void Draw::Resize(UINT _width, UINT _height)
 	surface = new UINT[numPixels];
 }
 
+void Draw::SetAnimationTimer(double _animationTimerMax, Draw* _parent)
+{
+	if (flags & IS_ANIMATION)
+	{
+		parentID = _parent->GetID();
+		animationID = _parent->GetAnimationID();
+	}
+}
+
+void Draw::ClearDepthBuffer()
+{
+	for (int i = 0; i < width * height; i++)
+	{
+		depthBuffer[i] = FLT_MAX;
+	}
+}
+
+void Draw::TurnOnDepth()
+{
+	if (flags & NEEDS_DEPTH)
+		return;
+	else
+	{
+		flags |= NEEDS_DEPTH;
+		
+		depthBuffer = new float[width * height];
+
+		ClearDepthBuffer();
+	}
+}
+
+void Draw::TurnOffDepth()
+{
+	if (flags & NEEDS_DEPTH)
+	{
+		flags &= ~NEEDS_DEPTH;
+		delete[] depthBuffer;
+		depthBuffer = nullptr;
+	}
+}
+
+int Draw::_2Dto1D(UINT x, UINT y, UINT width)
+{
+	return x + y * width;
+}
+
 
 void Draw::Fill(const UINT color)
 {
@@ -173,16 +204,23 @@ UINT Draw::_2Dto1D(UINT x, UINT y)
 	return x + y * width;
 }
 
-void Draw::DrawPixel(const UINT color, Vector2 pos)
+void Draw::DrawPixel(const UINT color, Vector2 pos, float depth)
 {
 	if (pos.x >= width || pos.x < 0 || pos.y >= height || pos.y < 0)
 		return;
-	surface[_2Dto1D(std::floor(pos.x), std::floor(pos.y))] = color;
+	int index = _2Dto1D(std::floor(pos.x), std::floor(pos.y));
+	if (flags & NEEDS_DEPTH)
+	{
+		if (depth >= depthBuffer[index])
+			return;
+		depthBuffer[index] = depth;
+	}
+	surface[index] = color;
 }
 
-void Draw::Blit(Rect sourceRect, Vector2 rasterPos, Draw& image)
+void Draw::Blit(Rect sourceRect, Vector2 rasterPos, Draw& image, float depth)
 {
-	if (alphaBlending && image.alphaBlending)
+	if (flags & ALPHA_BLENDING && image.flags & ALPHA_BLENDING)
 	{
 		for (int y = 0; y < sourceRect.height && y + rasterPos.y < height; y++)
 		{
@@ -192,7 +230,7 @@ void Draw::Blit(Rect sourceRect, Vector2 rasterPos, Draw& image)
 				Pixels source(*image.GetPixel(Vector2(x + sourceRect.pos.x, y + sourceRect.pos.y)), true);
 				
 				destination.Lerp(source);
-				DrawPixel(destination.ARGB, Vector2(x + rasterPos.x, y + rasterPos.y));
+				DrawPixel(destination.ARGB, Vector2(x + rasterPos.x, y + rasterPos.y), depth);
 			}
 		}
 	}
@@ -209,26 +247,26 @@ void Draw::Blit(Rect sourceRect, Vector2 rasterPos, Draw& image)
 	}
 }
 
-void Draw::LoadAnimation(Draw& spriteSheet, Vector2 rasterPos, UINT imageSizeWidth, UINT imageSizeHeight, XTime clock)
+void Draw::LoadAnimation(Draw& spriteSheet, Vector2 rasterPos, UINT imageSizeWidth, UINT imageSizeHeight, XTime clock, float depth)
 {
-	if (spriteSheet.isAnimation && spriteSheet.parentID == ID)
+	if (spriteSheet.flags & IS_ANIMATION && spriteSheet.parentID == ID)
 	{
 		spriteSheet.animationTimer += clock.Delta();
 		if (spriteSheet.animationTimer >= 1 / spriteSheet.animationTimerMax)
 		{
 			Vector2& animationTrackCur = GetTrack(spriteSheet.animationID, spriteSheet.GetWidth() / imageSizeWidth, spriteSheet.GetHeight() / imageSizeHeight, true);
-			Blit(Rect(imageSizeWidth, imageSizeHeight, Vector2(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet);
+			Blit(Rect(imageSizeWidth, imageSizeHeight, Vector2(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet, depth);
 			spriteSheet.animationTimer = 0;
 		}
 		else
 		{
 			Vector2& animationTrackCur = GetTrack(spriteSheet.animationID, spriteSheet.GetWidth() / imageSizeWidth, spriteSheet.GetHeight() / imageSizeHeight, false);
-			Blit(Rect(imageSizeWidth, imageSizeHeight, Vector2(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet);
+			Blit(Rect(imageSizeWidth, imageSizeHeight, Vector2(animationTrackCur.x * imageSizeWidth, animationTrackCur.y * imageSizeHeight)), rasterPos, spriteSheet, depth);
 		}
 	}
 }
 
-void Draw::ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor)
+void Draw::ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor, float depth)
 {
 	if (point1.x == point2.x)
 	{
@@ -237,7 +275,7 @@ void Draw::ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor,
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Vector2(point1.x, y));
+			DrawPixel(color.ARGB, Vector2(point1.x, y), depth);
 		}
 		return;
 	}
@@ -248,7 +286,7 @@ void Draw::ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor,
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
-			DrawPixel(color.ARGB, Vector2(x, point1.y));
+			DrawPixel(color.ARGB, Vector2(x, point1.y), depth);
 		}
 		return;
 	}
@@ -263,7 +301,7 @@ void Draw::ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor,
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Vector2(x, std::floor(y + 0.5)));
+			DrawPixel(color.ARGB, Vector2(x, std::floor(y + 0.5)), depth);
 		}
 	}
 	else
@@ -277,12 +315,12 @@ void Draw::ParametricLine(Vector2 point1, Vector2 point2, const UINT startColor,
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
-			DrawPixel(color.ARGB, Vector2(std::floor(x + 0.5), y));
+			DrawPixel(color.ARGB, Vector2(std::floor(x + 0.5), y), depth);
 		}
 	}
 }
 
-void Draw::LineNx(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor)
+void Draw::LineNx(Vector2 point1, Vector2 point2, const UINT startColor, const UINT endColor, float depth)
 {
 	if (point1.x == point2.x)
 	{
@@ -291,7 +329,7 @@ void Draw::LineNx(Vector2 point1, Vector2 point2, const UINT startColor, const U
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Vector2(point1.x, y));
+			DrawPixel(color.ARGB, Vector2(point1.x, y), depth);
 		}
 		return;
 	}
@@ -304,7 +342,7 @@ void Draw::LineNx(Vector2 point1, Vector2 point2, const UINT startColor, const U
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (x - fmin(point1.x, point2.x)) / fabs(point1.x - point2.x));
-			DrawPixel(color.ARGB, Vector2(x, slope * x + intercept));
+			DrawPixel(color.ARGB, Vector2(x, slope * x + intercept), depth);
 		}
 	}
 	else
@@ -314,7 +352,7 @@ void Draw::LineNx(Vector2 point1, Vector2 point2, const UINT startColor, const U
 			Pixels color(startColor, true);
 			Pixels maxColor(endColor, true);
 			color.Lerp(maxColor, (y - fmin(point1.y, point2.y)) / fabs(point1.y - point2.y));
-			DrawPixel(color.ARGB, Vector2((y - intercept)/slope, y));
+			DrawPixel(color.ARGB, Vector2((y - intercept)/slope, y), depth);
 		}
 	}
 }

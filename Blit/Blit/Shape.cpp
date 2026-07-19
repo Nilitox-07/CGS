@@ -62,7 +62,7 @@ void Shape::DrawShape(Draw& screen, UINT startColor, UINT endColor)
 		firstColorPx.Lerp(endColorPx, i * 1.0f / edges.size());
 		secondColorPx.Lerp(endColorPx, ((i + 1) * 1.0f) / edges.size());
 
-		screen.ParametricLine(edges[i][0], edges[i][1], firstColorPx.ARGB, secondColorPx.ARGB);
+		screen.ParametricLine(edges[i][0], edges[i][1], firstColorPx.ARGB, secondColorPx.ARGB, 1);
 		//screen.LineNx(edges[i][0], edges[i][1], firstColorPx.ARGB, secondColorPx.ARGB);
 	}
 }

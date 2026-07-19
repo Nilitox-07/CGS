@@ -155,6 +155,7 @@
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="NxMath.h" />
     <ClInclude Include="pixels.h" />
+    <ClInclude Include="Rendering.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="RasterSurface.h" />
     <ClInclude Include="Rect.h" />

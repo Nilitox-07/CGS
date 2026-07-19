@@ -479,11 +479,11 @@ Matrix4 Matrix4::Perspective(float fov, float aspect, float nearPlane, float far
 
 	float YScale = 1.0f / tan(fov / 2.0f);
 
-	result[0][0] = YScale * aspect;
+	result[0][0] = YScale / aspect;
 	result[1][1] = YScale;
 
-	result[2][2] = (farPlane + nearPlane) / (nearPlane - farPlane);
-	result[2][3] = (2.0f * farPlane * nearPlane) / (nearPlane - farPlane);
+	result[2][2] = (farPlane) / (farPlane - nearPlane);
+	result[2][3] = -(farPlane * nearPlane) / (farPlane - nearPlane);
 
 	result[3][2] = -1.0f;
 	result[3][3] = 0.0f;

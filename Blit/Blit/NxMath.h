@@ -17,3 +17,19 @@ struct Rect
 		pos = _pos;
 	}
 };
+
+struct Barycentric
+{
+	float alpha;
+	float beta;
+	float gamma;
+
+	Barycentric(float _alpha, float _beta, float _gamma) :
+		alpha(_alpha),
+		beta(_beta),
+		gamma(_gamma)
+	{
+
+	}
+};
+

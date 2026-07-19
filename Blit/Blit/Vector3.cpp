@@ -159,3 +159,16 @@ Vector2 Vector3::CartesianTo2D(const Draw& screen)
 
 	return toReturn;
 }
+
+Barycentric FindBarycentric(Vector2 a, Vector2 b, Vector2 c, Vector2 point)
+{
+	float denominator = ((b.y - c.y) * (a.x - c.x) + (c.x - b.x) * (a.y - c.y));
+
+	float alpha = ((b.y - c.y) * (point.x - c.x) + (c.x - b.x) * (point.y - c.y)) / denominator;
+
+	float beta = ((c.y - a.y) * (point.x - c.x) + (a.x - c.x) * (point.y - c.y)) / denominator;
+
+	float gamma = 1.0f - alpha - beta;
+
+	return Barycentric(alpha, beta, gamma);
+}
