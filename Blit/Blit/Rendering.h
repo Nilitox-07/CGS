@@ -23,14 +23,14 @@ void DrawTriangle(Vertex a, Vertex b, Vertex c, Draw& material, Draw& screen)
 
 			Barycentric effect = FindBarycentric(a2D, b2D, c2D, currPosition);
 
-			Vector2 uvA = (a.uv * effect.alpha);
-			Vector2 uvB = (b.uv * effect.beta);
-			Vector2 uvC = (c.uv * effect.gamma);
+			Vector3 uvA = (a.uvw * effect.alpha);
+			Vector3 uvB = (b.uvw * effect.beta);
+			Vector3 uvC = (c.uvw * effect.gamma);
 
-			Vector2 uv = uvA + uvB + uvC;
+			Vector3 uvw = uvA + uvB + uvC;
 
-			int texX = uv.x * (material.GetWidth() - 1);
-			int texY = uv.y * (material.GetHeight() - 1);
+			int texX = uvw.x * (material.GetWidth() - 1);
+			int texY = uvw.y * (material.GetHeight() - 1);
 
 			if (effect.alpha >= 0 && effect.alpha <= 1 &&
 				effect.beta >= 0 && effect.beta <= 1 &&

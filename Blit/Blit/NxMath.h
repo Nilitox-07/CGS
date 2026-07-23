@@ -36,18 +36,21 @@ struct Barycentric
 struct Vertex
 {
 	Vector3 position;
-	Vector2 uv;
+	Vector3 uvw;
+	Vector3 norm;
 
 	Vertex() :
 		position(Vector3()),
-		uv(Vector2())
+		uvw(Vector3()),
+		norm(Vector3())
 	{
 
 	}
 
-	Vertex(Vector3 _position, Vector2 _uv):
+	Vertex(Vector3 _position, Vector3 _uvw, Vector3 _norm):
 		position(_position),
-		uv(_uv)
+		uvw(_uvw),
+		norm(_norm)
 	{
 
 	}

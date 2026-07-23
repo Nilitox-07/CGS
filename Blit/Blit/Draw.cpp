@@ -239,7 +239,7 @@ void Draw::DrawPixel(const UINT color, Vector2 pos, float depth)
 	if (pos.x >= width || pos.x < 0 || pos.y >= height || pos.y < 0)
 		return;
 	int index = _2Dto1D(std::floor(pos.x), std::floor(pos.y));
-	if (flags & NEEDS_DEPTH)
+	if (flags & NEEDS_DEPTH && depth != -1)
 	{
 
 		if (depth >= depthBuffer[index])

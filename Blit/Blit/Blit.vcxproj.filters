@@ -16,6 +16,9 @@
     <Filter Include="Textures">
       <UniqueIdentifier>{13248e6d-c3d7-4ffc-b334-e28917914fc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{02eef8ec-a746-41dc-85a7-7754b8ac80ea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -102,6 +105,12 @@
       <Filter>Textures</Filter>
     </ClInclude>
     <ClInclude Include="greendragon.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="StoneHenge.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="StoneHenge_Texture.h">
       <Filter>Textures</Filter>
     </ClInclude>
   </ItemGroup>

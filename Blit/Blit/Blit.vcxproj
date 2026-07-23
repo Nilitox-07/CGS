@@ -159,6 +159,8 @@
     <ClInclude Include="NxMath.h" />
     <ClInclude Include="pixels.h" />
     <ClInclude Include="Rendering.h" />
+    <ClInclude Include="StoneHenge.h" />
+    <ClInclude Include="StoneHenge_Texture.h" />
     <ClInclude Include="treeolife.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="RasterSurface.h" />

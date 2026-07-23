@@ -9,13 +9,15 @@
 #include "flower.h"
 #include "greendragon.h"
 #include "treeolife.h"
+#include "StoneHenge_Texture.h"
 
-Draw tile;
-Draw fire;
-Draw flower;
-Draw celestial;
-Draw dragon;
-Draw tree;
+//Draw tile;
+//Draw fire;
+//Draw flower;
+//Draw celestial;
+//Draw dragon;
+//Draw tree;
+Draw stoneTexture;
 
 Draw ConvertBGRAtoARGB(const UINT* texture, UINT textureWidth, UINT textureHeight, UINT totalPixels)
 {
@@ -35,10 +37,13 @@ Draw ConvertBGRAtoARGB(const UINT* texture, UINT textureWidth, UINT textureHeigh
 
 void ConvertImages()
 {
-	tile = ConvertBGRAtoARGB(tiles_12_pixels, tiles_12_width, tiles_12_height, tiles_12_numpixels);
+	/*tile = ConvertBGRAtoARGB(tiles_12_pixels, tiles_12_width, tiles_12_height, tiles_12_numpixels);
 	fire = ConvertBGRAtoARGB(fire_02_pixels, fire_02_width, fire_02_height, fire_02_numpixels);
 	flower = ConvertBGRAtoARGB(flower_pixels, flower_width, flower_height, flower_numpixels);
 	celestial = ConvertBGRAtoARGB(celestial_pixels, celestial_width, celestial_height, celestial_numpixels);
 	dragon = ConvertBGRAtoARGB(greendragon_pixels, greendragon_width, greendragon_height, greendragon_numpixels);
-	tree = ConvertBGRAtoARGB(treeolife_pixels, treeolife_width, treeolife_height, treeolife_numpixels);
+	tree = ConvertBGRAtoARGB(treeolife_pixels, treeolife_width, treeolife_height, treeolife_numpixels);*/
+
+	stoneTexture = ConvertBGRAtoARGB(StoneHenge_pixels, StoneHenge_width, StoneHenge_height, StoneHenge_numpixels);
+
 }
