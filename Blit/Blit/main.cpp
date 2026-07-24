@@ -199,11 +199,14 @@ int main()
 
 			float pulseRatio = (0.5f * (1.0f + sinf((float)clock.TotalTime() * pulseRate)));
 
+			float lightRange = 25.0f;
+
 			Vector3 lightDirection = pointLightPosition - stoneEdgesInfo[i].position;
-			float magnitude = lightDirection.Magnitude();
+			float magnitude = lightDirection.MagnitudeSquared();
+			float distancedRatio = 1.0f - ClampVal(magnitude / lightRange);
 
 			Pixels pointBlack = black;
-			pointBlack.Lerp(pointLightColor, ClampVal(stoneEdgesInfo[i].norm.Normalize().Dot(lightDirection.Normalize()) * pulseRatio));
+			pointBlack.Lerp(pointLightColor, ClampVal(stoneEdgesInfo[i].norm.Normalize().Dot(lightDirection.Normalize()) * pulseRatio * distancedRatio));
 
 
 			dirBlack += pointBlack;
