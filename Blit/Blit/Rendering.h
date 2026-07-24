@@ -40,7 +40,27 @@ void DrawTriangle(Vertex a, Vertex b, Vertex c, Draw& material, Draw& screen)
 
 				int index = material._2Dto1D(texX, texY);
 
-				screen.DrawPixel(material.GetSurface()[index], currPosition, -depth);
+				Vector3 colorA = Vector3(a.color.red, a.color.green, a.color.blue);
+				Vector3 colorB = Vector3(b.color.red, b.color.green, b.color.blue);
+				Vector3 colorC = Vector3(c.color.red, c.color.green, c.color.blue);
+
+				float red = colorA.x * effect.alpha + colorB.x * effect.beta + colorC.x * effect.gamma;
+				float green = colorA.y * effect.alpha + colorB.y * effect.beta + colorC.y * effect.gamma;
+				float blue = colorA.z * effect.alpha + colorB.z * effect.beta + colorC.z * effect.gamma;
+
+				Pixels finalColorCalculated;
+
+				finalColorCalculated.red = red;
+				finalColorCalculated.green = green;
+				finalColorCalculated.blue = blue;
+				finalColorCalculated.alpha = 255;
+
+				finalColorCalculated.ARGB_Func();
+
+				Pixels finalColor(material.GetSurface()[index], true);
+				finalColor *= finalColorCalculated;
+
+				screen.DrawPixel(finalColor.ARGB, currPosition, -depth);
 			}
 		}
 	}

@@ -172,3 +172,28 @@ Barycentric FindBarycentric(Vector2 a, Vector2 b, Vector2 c, Vector2 point)
 
 	return Barycentric(alpha, beta, gamma);
 }
+
+void Clamp(float& value)
+{
+	if (value < 0)
+		value = 0.0f;
+	if (value > 1)
+		value = 1.0f;
+}
+
+float ClampVal(float value)
+{
+	if (value < 0)
+		return 0.0f;
+	if (value > 1)
+		return 1.0f;
+
+	return value;
+}
+
+void Clamp(Vector3& vec)
+{
+	Clamp(vec.x);
+	Clamp(vec.y);
+	Clamp(vec.z);
+}

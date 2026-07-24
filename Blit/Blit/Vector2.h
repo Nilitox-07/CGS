@@ -35,3 +35,4 @@ struct Vector2
 float toRadians(float angle);
 
 Vector2 PolarCordinates(Vector2 referencePoint, float angle, float distance);
+

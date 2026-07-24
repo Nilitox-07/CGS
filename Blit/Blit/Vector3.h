@@ -41,3 +41,8 @@ struct Vector3
 };
 
 Barycentric FindBarycentric(Vector2 a, Vector2 b, Vector2 c, Vector2 point);
+
+void Clamp(float& value);
+float ClampVal(float value);
+
+void Clamp(Vector3& vec);

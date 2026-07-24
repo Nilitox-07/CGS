@@ -48,7 +48,7 @@ int main()
 
 	std::vector<Pixels> colors = { red, green, blue, yellow, purple, cyan };
 
-	Pixels backgroundColor = Pixels(0xFF2222FF, true);
+	Pixels backgroundColor = Pixels(0xFF003366, true);
 
 	// Material/Textures
 
@@ -79,7 +79,6 @@ int main()
 		position = position * 0.1f;
 
 		position.y *= -1;
-		position.z += 2.5f;
 
 		Vector3 uvw = Vector3(StoneHenge_data[i].uvw[0], StoneHenge_data[i].uvw[1], StoneHenge_data[i].uvw[2]);
 		Vector3 norm = Vector3(StoneHenge_data[i].nrm[0], StoneHenge_data[i].nrm[1], StoneHenge_data[i].nrm[2]);
@@ -94,7 +93,7 @@ int main()
 	Matrix4 cameraMatrix = Matrix4::Indentity();
 
 	cameraMatrix *= Matrix4::RotationX(-18 * std::numbers::pi_v<float> / 180.0f);
-	cameraMatrix *= Matrix4::Translation(Vector3(0, -1, -1));
+	cameraMatrix *= Matrix4::Translation(Vector3(0, 0, -4));
 
 	Matrix4 viewMatrix = cameraMatrix.Inverse();
 
@@ -104,7 +103,24 @@ int main()
 
 	Matrix4 projectionMatrix = Matrix4::Perspective(90.0f * std::numbers::pi_v<float> / 180.0f, aspect, 0.1f, 10.0f);
 
-	float angle = 0;
+	float yaw = 0;
+	float pitch = 0;
+
+	float sens = 25.0f;
+
+	// Light
+
+	Vector3 lightDir = Vector3(-0.577, 0.577, -0.577);
+	Pixels lightColor = Pixels(0xFFC0C0F0, true);
+
+	Vector3 pointLightPosition = Vector3(-1, 0.5, -1);
+	//Pixels pointLightColor = Pixels(0, true);
+	Pixels pointLightColor = Pixels(0xFFFFFF00, true);
+
+	float pulseMax = 10.0f;
+	float pulseMin = 0.0f;
+
+	float pulseRate = 1.0f;
 
 	while (RS_Update(screen.GetSurface(), screen.GetPixels()))
 	{
@@ -113,9 +129,32 @@ int main()
 		screen.Fill(backgroundColor.ARGB);
 		screen.ClearDepthBuffer();
 
-		angle += clock.Delta();
+		// Moving Camara
 
-		//viewMatrix *= Matrix4::Translation(Vector3(0, 0, angle * std::numbers::pi_v<float> / 180.0f));
+		if (GetAsyncKeyState(VK_LEFT) & 0x8000)
+		{
+			pitch -= sens * clock.Delta();
+		}
+		if (GetAsyncKeyState(VK_RIGHT) & 0x8000)
+		{
+			pitch += sens * clock.Delta();
+		}
+		if (GetAsyncKeyState(VK_UP) & 0x8000)
+		{
+			yaw += sens * clock.Delta();
+		}
+		if (GetAsyncKeyState(VK_DOWN) & 0x8000)
+		{
+			yaw -= sens * clock.Delta();
+		}
+
+
+		Matrix4 cameraMatrix = Matrix4::Indentity();
+
+		cameraMatrix *= Matrix4::RotationX(yaw * std::numbers::pi_v<float> / 180.0f) * Matrix4::RotationY(pitch * std::numbers::pi_v<float> / 180.0f);
+		cameraMatrix *= Matrix4::Translation(Vector3(0, 0, -4));
+
+		Matrix4 viewMatrix = cameraMatrix.Inverse();
 
 		// Rendering Stars
 
@@ -150,7 +189,28 @@ int main()
 			Vector3 normView = viewMatrix.TransformPoint(stoneEdgesInfo[i].norm);
 			Vector3 normProj = projectionMatrix.TransformPoint(stoneEdgesInfo[i].norm);
 		
+			float ambiant = 0.2f;
+
+			float dirRatio = stoneEdgesInfo[i].norm.Normalize().Dot(lightDir) + ambiant;
+			Clamp(dirRatio);
+
+			Pixels dirBlack = black;
+			dirBlack.Lerp(lightColor, dirRatio);
+
+			float pulseRatio = (0.5f * (1.0f + sinf((float)clock.TotalTime() * pulseRate)));
+
+			Vector3 lightDirection = pointLightPosition - stoneEdgesInfo[i].position;
+			float magnitude = lightDirection.Magnitude();
+
+			Pixels pointBlack = black;
+			pointBlack.Lerp(pointLightColor, ClampVal(stoneEdgesInfo[i].norm.Normalize().Dot(lightDirection.Normalize()) * pulseRatio));
+
+
+			dirBlack += pointBlack;
+
 			updatedVerts[i] = Vertex(projectedVertice, stoneEdgesInfo[i].uvw, normProj);
+
+			updatedVerts[i].color = dirBlack;
 		}
 
 		// Rendering Objects
@@ -161,10 +221,10 @@ int main()
 			Vertex b = updatedVerts[StoneHenge_indicies[i + 1]];
 			Vertex c = updatedVerts[StoneHenge_indicies[i + 2]];
 
-			float facing = a.norm.Dot(viewMatrix.Forward());
+			//float facing = a.norm.Dot(viewMatrix.Forward());
 
-			if (facing > 0)
-				continue;
+			//if (facing > 0)
+			//	continue;
 
 			DrawTriangle(a, b, c, stoneTexture, screen);
 		}

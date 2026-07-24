@@ -3,6 +3,7 @@
 #include "Vector3.h"
 #include "Matrix4.h"
 #include <cmath>
+#include "pixels.h"
 
 struct Rect
 {
@@ -38,6 +39,7 @@ struct Vertex
 	Vector3 position;
 	Vector3 uvw;
 	Vector3 norm;
+	Pixels color;
 
 	Vertex() :
 		position(Vector3()),
